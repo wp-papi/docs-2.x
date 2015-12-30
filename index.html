@@ -1,0 +1,3688 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Papi docs</title>
+    <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,700italic,400italic" rel="stylesheet" type="text/css">
+    <link href="stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+      <script src="javascripts/all.js" type="text/javascript"></script>
+
+      <script>
+        $(function() {
+          setupLanguages(["php"]);
+        });
+      </script>
+  </head>
+
+  <body class="index">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <img src="images/logo.png" />
+        <div class="lang-selector">
+              <a href="#" data-language-name="php">php</a>
+        </div>
+        <div class="search">
+          <input type="text" class="search" id="input-search" placeholder="Search">
+        </div>
+        <ul class="search-results"></ul>
+      <div id="toc">
+      </div>
+        <ul class="toc-footer">
+            <li><a href='http://github.com/wp-papi/papi'>Fork me on GitHub</a></li>
+            <li><a href='http://wp-papi.github.io/'>Papi project site</a></li>
+            <li><a href='apigen/'>API reference docs</a></li>
+            <li><a href='https://github.com/wp-papi/papi/releases'>Changelog</a></li>
+            <li><a href='https://wp-papi.github.io/docs-1.x'>Documentation for Papi 1.x</a></li>
+        </ul>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="introduction">Introduction</h1>
+
+<p><strong>This is the documentation for Papi 2.x</strong></p>
+
+<p><a href="https://wp-papi.github.io/docs-1.x"><strong>Go to documentation for Papi 1.x</strong></a></p>
+
+<p>Papi has a different approach on how to work with fields and page types in WordPress. The idea is coming from how Page Type Builder in EPiServer works and has been loved by the developers.</p>
+
+<p>So we though why don&rsquo;t use the same approach in WordPress? Papi is  running in production and has been easy to work with when it came to add new fields. Papi don&rsquo;t have any admin user interface where you should add fields, we use classes in PHP, where one class represents one page type and in your class you add all fields you need. It&rsquo;s that easy!</p>
+
+<p>Papi does not save the property type value in the database, only the value of the property is saved since the type value exists in the page type file.</p>
+
+<p>Papi is completely open-source. If you want to help with its development you can submit your suggestions or improvements on in the <a href="https://github.com/wp-papi/papi">Github repository</a>.</p>
+
+<h2 id="requirements">Requirements</h2>
+
+<ul>
+<li>WordPress &gt;= 4.0</li>
+<li>PHP &gt;= 5.4.7</li>
+</ul>
+
+<h2 id="installation">Installation</h2>
+
+<p>If you&rsquo;re using Composer to manage WordPress, add Papi to your project&rsquo;s dependencies. Run:</p>
+
+<p><code class="prettyprint">composer require wp-papi/papi</code></p>
+
+<p>Or manually add it to your <code class="prettyprint">composer.json</code>:</p>
+<pre><code class="highlight json"><span class="p">{</span><span class="w">
+  </span><span class="s2">"require"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"php"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&gt;=5.4.7"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"wordpress"</span><span class="p">:</span><span class="w"> </span><span class="s2">"~4.2"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"wp-papi/papi"</span><span class="p">:</span><span class="w"> </span><span class="s2">"~2.0"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+          <h1 id="upgrade-guide">Upgrade guide</h1>
+
+<h2 id="upgrade-to-2.x-from-1.x">Upgrade to 2.x from 1.x</h2>
+
+<p>Change <code class="prettyprint">wp-papi/papi</code> version to <code class="prettyprint">~2.0</code> in your <code class="prettyprint">composer.json</code> file and run <code class="prettyprint">composer update</code>.</p>
+
+<h3 id="api">API</h3>
+
+<p><code class="prettyprint">papi_fields</code> is deprecated and replaced with <code class="prettyprint">papi_get_slugs</code>.</p>
+
+<h3 id="api-field">API Field</h3>
+
+<p><code class="prettyprint">papi_field</code> is deprecated and replaced with <code class="prettyprint">papi_get_field</code> because the name can be confusing when <code class="prettyprint">papi_update_field</code> and <code class="prettyprint">papi_delete_field</code> exists.</p>
+
+<p>It will still work to use <code class="prettyprint">papi_field</code> but you will get a deprecated warning.</p>
+
+<h3 id="api-page">API Page</h3>
+
+<p><code class="prettyprint">current_page</code> is deprecated. You can use <code class="prettyprint">papi_get_page</code> with no argument to get the same result.</p>
+
+<p>It will still work to use <code class="prettyprint">current_page</code> but you will get a deprecated warning.</p>
+
+<h3 id="properties">Properties</h3>
+
+<h4 id="dropdown-and-post-property">Dropdown and Post property</h4>
+
+<p>In 2.0.0 <code class="prettyprint">placeholder</code> setting replaced <code class="prettyprint">blank_text</code> and <code class="prettyprint">include_blank</code>.</p>
+
+<h4 id="relationship-property">Relationship property</h4>
+
+<p>In 2.0.0 <code class="prettyprint">choose_max</code> was renamed to <code class="prettyprint">limit</code>.</p>
+
+<h3 id="settings-filters">Settings filters</h3>
+
+<h4 id="show-standard-page-type-for-post-type">Show standard page type for post type</h4>
+
+<p>The filter <code class="prettyprint">papi/settings/standard_page_type_{$post_type}</code> was renamed to <code class="prettyprint">papi/settings/show_standard_page_type_{$post_type}</code>.</p>
+
+          <h1 id="page-type-directory">Page Type Directory</h1>
+
+<p>Papi does require a directory in your theme, plugin or somewhere in your WordPress site where your page types exists. You can add multiplied directories.</p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Register page types directory with Papi.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/settings/directories'</span><span class="p">,</span> <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">__DIR__</span> <span class="o">.</span> <span class="s1">'/includes/page-types'</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre>
+
+          <h1 id="actions">Actions</h1>
+
+<h2 id="delete-value">Delete value</h2>
+
+<p><strong>action</strong> <code class="prettyprint">papi/delete_value/{$property_type}</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/delete_value/{$property_type}` action.
+ */</span>
+
+<span class="nx">add_action</span><span class="p">(</span> <span class="s1">'papi/delete_value/string'</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span> <span class="nv">$slug</span><span class="p">,</span> <span class="nv">$post_id</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// do something when string property is deleted
+</span><span class="p">},</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">2</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>With this action you can do something when a property is deleted with <code class="prettyprint">papi_delete_field</code> or <code class="prettyprint">papi_delete_option</code>. The <code class="prettyprint">$post_id</code> will be zero when you is deleting a option value.</p>
+
+<h2 id="include-plugins-or-properties">Include plugins or properties</h2>
+
+<p><strong>action</strong> <code class="prettyprint">papi/include</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/include` action that will include a custom property.
+ */</span>
+
+<span class="nx">add_action</span><span class="p">(</span> <span class="s1">'papi/include'</span><span class="p">,</span> <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">require_once</span> <span class="s1">'class-papi-property-kvack.php'</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>With this action you can include plugins or properties build for Papi. Third party properties should use this action when they load there custom property in the plugin.</p>
+
+          <h1 id="api">API</h1>
+
+<h2 id="papi_get_page_type_key">papi_get_page_type_key</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example output from `papi_get_page_type` function.
+ */</span>
+
+<span class="nx">string</span> <span class="s1">'_papi_page_type'</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This function will return the key that Papi uses as key in postmeta for the page type id.</p>
+
+<h2 id="papi_get_slugs">papi_get_slugs</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example output from `papi_get_slugs` function.
+ */</span>
+
+<span class="p">[</span>
+  <span class="s1">'Content'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+    <span class="s1">'top_module'</span><span class="p">,</span>
+    <span class="s1">'feature_module'</span><span class="p">,</span>
+    <span class="s1">'show_feature_module'</span>
+  <span class="p">]</span>
+<span class="p">]</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This function will return a array with meta box title as keys and array of all Papi field slugs in that meta box.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$post_id</td>
+<td>null</td>
+<td>no</td>
+<td>The post id will be added automatic if you are one a post, page or custom post type page. When fetching values from another post this argument will be required</td>
+</tr>
+</tbody></table>
+
+<h2 id="papi_property">papi_property</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi_property` function.
+ */</span>
+
+<span class="c1">// my-page-type.php
+</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">box</span><span class="p">(</span> <span class="s1">'My meta box'</span><span class="p">,</span> <span class="p">[</span>
+  <span class="nx">papi_property</span><span class="p">(</span> <span class="s1">'properties/my-image.php'</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">'slug'</span> <span class="o">=&gt;</span> <span class="s1">'my_meta_box_image'</span>
+  <span class="p">]</span> <span class="p">)</span>
+<span class="p">]</span> <span class="p">);</span>
+
+<span class="c1">// properties/my-image.php
+</span><span class="k">return</span> <span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'image'</span><span class="p">,</span>
+  <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Image'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'custom_image_slug'</span>
+<span class="p">]</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This argument is only used when you load a template file, the array will be used to override property options from the template file.</p>
+
+<p>This function will be the same as <code class="prettyprint">$this-&gt;property</code> method on a page type.</p>
+
+<p>When using a shared property file or another file that the property are stored in you can used it as a template file.</p>
+
+<p>This is great to use when you will share properties over many page types and it will be less code to write.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$file_or_options</td>
+<td></td>
+<td>yes</td>
+<td>File path or a array containing property options</td>
+</tr>
+<tr>
+<td>$values</td>
+<td>array</td>
+<td>no</td>
+<td>The values to override the template values with</td>
+</tr>
+</tbody></table>
+
+<h2 id="papi_tab">papi_tab</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi_tab` function.
+ */</span>
+
+<span class="c1">// my-page-type.php
+</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">box</span><span class="p">(</span> <span class="s1">'My meta box'</span><span class="p">,</span> <span class="p">[</span>
+  <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tab</span><span class="p">(</span> <span class="s1">'tabs/image-tab.php'</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Background'</span>
+  <span class="p">]</span> <span class="p">)</span>
+<span class="p">]</span> <span class="p">);</span>
+
+<span class="c1">// tabs/image.php
+</span><span class="k">return</span> <span class="nx">papi_tabs</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Images'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'custom_image_slug'</span>
+<span class="p">],</span> <span class="p">[</span>
+  <span class="nx">papi_property</span><span class="p">(</span> <span class="s1">'properties/my-image.php'</span> <span class="p">),</span>
+  <span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+    <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'string'</span><span class="p">,</span>
+    <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Name'</span><span class="p">,</span>
+    <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'name'</span>
+  <span class="p">]</span> <span class="p">)</span>
+<span class="p">]</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This argument is only used when you load a template file, the array will be used to override tab options from the template file.</p>
+
+<p>This function will be the same as <code class="prettyprint">$this-&gt;tab</code> method on a page type.</p>
+
+<p>When using a shared tab file or another file that the tab are stored in you can used it as a template file.</p>
+
+<p>This is great to use when you will share tabs over many page types and it will be less code to write.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$file_or_options</td>
+<td></td>
+<td>yes</td>
+<td>Title, file path or a array containing tab options</td>
+</tr>
+<tr>
+<td>$properties</td>
+<td>array</td>
+<td>no</td>
+<td>The values to override the template values with or properties</td>
+</tr>
+</tbody></table>
+
+<h2 id="papi_template">papi_template</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi_template` function.
+ */</span>
+
+<span class="c1">// my-page-type.php
+</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">box</span><span class="p">(</span> <span class="s1">'My meta box'</span><span class="p">,</span> <span class="p">[</span>
+  <span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+    <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'dropdown'</span><span class="p">,</span>
+    <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'Dropdown'</span><span class="p">,</span>
+    <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'my_dropdown'</span><span class="p">,</span>
+    <span class="s1">'settings'</span> <span class="o">=&gt;</span> <span class="nx">papi_template</span><span class="p">(</span> <span class="s1">'settings/dropdown.php'</span> <span class="p">)</span>
+  <span class="p">]</span> <span class="p">)</span>
+<span class="p">]</span> <span class="p">);</span>
+
+<span class="c1">// settings/dropdown.php
+</span><span class="k">return</span> <span class="p">[</span>
+  <span class="s1">'items'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+    <span class="s1">'White'</span> <span class="o">=&gt;</span> <span class="s1">'#ffffff'</span><span class="p">,</span>
+    <span class="s1">'Black'</span> <span class="o">=&gt;</span> <span class="s1">'#000000'</span>
+  <span class="p">]</span>
+<span class="p">];</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p><code class="prettyprint">papi_property</code> function uses this function load template file. This function can be used to load template files that returns arrays. It can be handy when you will have to repeater or dropdown values in another file.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$file_or_options</td>
+<td></td>
+<td>yes</td>
+<td>File path to template file</td>
+</tr>
+<tr>
+<td>$properties</td>
+<td>array</td>
+<td>no</td>
+<td>The values to override the template values with</td>
+</tr>
+</tbody></table>
+
+          <h1 id="api-field">API Field</h1>
+
+<h2 id="papi_delete_field">papi_delete_field</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi_delete_field` function.
+ */</span>
+
+<span class="nv">$success</span> <span class="o">=</span> <span class="nx">papi_delete_field</span><span class="p">(</span> <span class="mi">456</span><span class="p">,</span> <span class="s1">'twitter_url'</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>With this function you can delete property value from the database. It will return false if can&rsquo;t update or find the property in a page type.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$post_id</td>
+<td>null</td>
+<td>no</td>
+</tr>
+<tr>
+<td>$slug</td>
+<td></td>
+<td> yes</td>
+</tr>
+</tbody></table>
+
+<h2 id="papi_get_field">papi_get_field</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi_get_field` function.
+ */</span>
+
+<span class="k">echo</span> <span class="nx">papi_get_field</span><span class="p">(</span> <span class="s1">'twitter_url'</span> <span class="p">);</span>
+
+<span class="c1">// with default value
+</span><span class="k">echo</span> <span class="nx">papi_get_field</span><span class="p">(</span> <span class="s1">'twitter_url'</span><span class="p">,</span> <span class="s1">'http://twitter.com/frozzare'</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>The post id will be added automatic if you are one a post, page or custom post type page.</p>
+
+<p>When fetching values from another post this argument will be required.</p>
+
+<p>You can also use <a href="#the_papi_field">the_papi_field</a> to display it without <code class="prettyprint">echo</code></p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$post_id</td>
+<td>null</td>
+<td>no       </td>
+<td>The post id will be added automatic if you are one a post, page or custom post type page. When fetching values from another post this argument will be required</td>
+</tr>
+<tr>
+<td>$slug</td>
+<td></td>
+<td> yes</td>
+<td> The property slug to fetch value from</td>
+</tr>
+<tr>
+<td>$default</td>
+<td>null</td>
+<td>no</td>
+<td>When a default value is passed as argument it will use that value as return value and echo it if the property value is empty or don&rsquo;t exists</td>
+</tr>
+</tbody></table>
+
+<h2 id="papi_update_field">papi_update_field</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi_update_field` function.
+ */</span>
+
+<span class="nv">$success</span> <span class="o">=</span> <span class="nx">papi_update_field</span><span class="p">(</span> <span class="mi">456</span><span class="p">,</span> <span class="s1">'twitter_url'</span><span class="p">,</span> <span class="s1">'http://twitter.com/frozzare'</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>With this function you can update property value from the database. It will return false if can&rsquo;t update or find the property in a page type.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$post_id</td>
+<td>null</td>
+<td>no</td>
+</tr>
+<tr>
+<td>$slug</td>
+<td></td>
+<td> yes</td>
+</tr>
+</tbody></table>
+
+<h2 id="the_papi_field">the_papi_field</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `the_papi_field` function.
+ */</span>
+
+<span class="nx">the_papi_field</span><span class="p">(</span> <span class="s1">'twitter_url'</span> <span class="p">)</span>
+
+<span class="c1">// with post id
+</span><span class="nx">the_papi_field</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'twitter_url'</span> <span class="p">)</span>
+
+<span class="c1">// with default value
+</span><span class="nx">the_papi_field</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'twitter_url'</span><span class="p">,</span> <span class="s1">'http://twitter.com/frozzare'</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This function will echo the value of a property using the property slug.</p>
+
+<p>You can also use <a href="#papi_field">papi_field</a> to fetch the value into a variable.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$post_id</td>
+<td>null</td>
+<td>no       </td>
+<td>The post id will be added automatic if you are one a post, page or custom post type page. When fetching values from another post this argument will be required</td>
+</tr>
+<tr>
+<td>$slug</td>
+<td></td>
+<td> yes</td>
+<td> The property slug to fetch value from</td>
+</tr>
+<tr>
+<td>$default</td>
+<td>null</td>
+<td>no</td>
+<td>When a default value is passed as argument it will use that value as return value and echo it if the property value is empty or don&rsquo;t exists</td>
+</tr>
+</tbody></table>
+
+          <h1 id="api-page">API Page</h1>
+
+<h2 id="papi_get_page">papi_get_page</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi_get_page` function.
+ */</span>
+
+<span class="k">echo</span> <span class="nx">papi_get_page</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">twitter_url</span><span class="p">;</span>
+
+<span class="c1">// with post id
+</span><span class="k">echo</span> <span class="nx">papi_get_page</span><span class="p">(</span> <span class="mi">2</span> <span class="p">)</span><span class="o">-&gt;</span><span class="na">twitter_url</span><span class="p">;</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>When given a post id it will fetch the Papi page for that post id instead.</p>
+
+<p>The papi page function will do the same as current page function if no post id is used as a argument.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$post_id</td>
+<td>null</td>
+<td>no       </td>
+<td>The post id will be added automatic if you are one a post, page or custom post type page. When fetching values from another post this argument will be required</td>
+</tr>
+</tbody></table>
+
+<h2 id="papi_get_page_type_id">papi_get_page_type_id</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi_get_page_type_id` function.
+ */</span>
+
+<span class="k">echo</span> <span class="nx">papi_get_page_type_id</span><span class="p">();</span>
+<span class="c1">// "article-page-type"
+</span>
+<span class="c1">// with post id
+</span><span class="k">echo</span> <span class="nx">papi_get_page_type_id</span><span class="p">(</span> <span class="mi">2</span> <span class="p">);</span>
+<span class="c1">// "activity-page-type"
+</span></code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>When given a post id it will fetch the Papi page for that post id instead.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$post_id</td>
+<td>null</td>
+<td>no       </td>
+<td>The post id will be added automatic if you are one a post, page or custom post type page. When fetching values from another post this argument will be required</td>
+</tr>
+</tbody></table>
+
+<h2 id="papi_get_page_type_name">papi_get_page_type_name</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi_get_page_type_name` function.
+ */</span>
+<span class="k">echo</span> <span class="nx">papi_get_page_type_name</span><span class="p">();</span>
+<span class="c1">// =&gt; "Article Page"
+</span>
+<span class="c1">// with post id
+</span><span class="k">echo</span> <span class="nx">papi_get_page_type_name</span><span class="p">(</span> <span class="mi">2</span> <span class="p">);</span>
+<span class="c1">// =&gt; "Video Page"
+</span></code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>Get the page type name. Useful when you will print out the name of the page type in your theme.</p>
+
+<p>You can also use <a href="#the_papi_page_type_name">the_papi_page_type_name</a> to display it without <code class="prettyprint">echo</code></p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$post_id</td>
+<td>null</td>
+<td>no       </td>
+<td>The post id will be added automatic if you are one a post, page or custom post type page. When fetching values from another post this argument will be required</td>
+</tr>
+</tbody></table>
+
+<h2 id="the_papi_page_type_name">the_papi_page_type_name</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `the_papi_page_type_name` function.
+ */</span>
+
+<span class="nx">the_papi_page_type_name</span><span class="p">();</span>
+<span class="c1">// =&gt; "Article Page"
+</span>
+<span class="c1">// with post id
+</span><span class="nx">the_papi_page_type_name</span><span class="p">(</span> <span class="mi">2</span> <span class="p">);</span>
+<span class="c1">// =&gt; "Video Page"
+</span></code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>Print the page type name. Useful when you will print out the name of the page type in your theme.</p>
+
+<p>You can also use <a href="#papi_page_type_name">papi_page_type_name</a> to fetch the name into a variable.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$post_id</td>
+<td>null</td>
+<td>no       </td>
+<td>The post id will be added automatic if you are one a post, page or custom post type page. When fetching values from another post this argument will be required</td>
+</tr>
+</tbody></table>
+
+          <h1 id="api-option">API Option</h1>
+
+<h2 id="papi_delete_option">papi_delete_option</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi_delete_option` function.
+ */</span>
+
+<span class="nv">$success</span> <span class="o">=</span> <span class="nx">papi_delete_field</span><span class="p">(</span> <span class="s1">'twitter_url'</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>With this function you can delete property value from the database. It will return false if can&rsquo;t update or find the property in a option type.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$slug</td>
+<td></td>
+<td> yes</td>
+</tr>
+</tbody></table>
+
+<h2 id="papi_get_option">papi_get_option</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi_get_option` function.
+ */</span>
+
+<span class="k">echo</span> <span class="nx">papi_get_option</span><span class="p">(</span> <span class="s1">'twitter_url'</span> <span class="p">);</span>
+
+<span class="c1">// with default value
+</span><span class="k">echo</span> <span class="nx">papi_get_option</span><span class="p">(</span> <span class="s1">'twitter_url'</span><span class="p">,</span> <span class="s1">'http://twitter.com/frozzare'</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>Fetch property value from option type.</p>
+
+<p>You can also use <a href="#the_papi_option">the_papi_option</a> to display it without <code class="prettyprint">echo</code></p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$slug</td>
+<td></td>
+<td> yes</td>
+<td> The property slug to fetch value from</td>
+</tr>
+<tr>
+<td>$default</td>
+<td>null</td>
+<td>no</td>
+<td>When a default value is passed as argument it will use that value as return value and echo it if the property value is empty or don&rsquo;t exists</td>
+</tr>
+</tbody></table>
+
+<h2 id="papi_update_option">papi_update_option</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi_update_option` function.
+ */</span>
+
+<span class="nv">$success</span> <span class="o">=</span> <span class="nx">papi_update_option</span><span class="p">(</span> <span class="s1">'twitter_url'</span><span class="p">,</span> <span class="s1">'http://twitter.com/frozzare'</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>With this function you can update property value from the database. It will return false if can&rsquo;t update or find the property in a option type.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$slug</td>
+<td></td>
+<td> yes</td>
+</tr>
+</tbody></table>
+
+<h2 id="the_papi_option">the_papi_option</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `the_papi_option` function.
+ */</span>
+
+<span class="nx">the_papi_option</span><span class="p">(</span> <span class="s1">'twitter_url'</span> <span class="p">)</span>
+
+<span class="c1">// with default value
+</span><span class="nx">the_papi_option</span><span class="p">(</span> <span class="s1">'twitter_url'</span><span class="p">,</span> <span class="s1">'http://twitter.com/frozzare'</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This function will echo the value of a property using the property slug.</p>
+
+<p>You can also use <a href="#papi_option">papi_option</a> to fetch the value into a variable.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$slug</td>
+<td></td>
+<td> yes</td>
+<td> The property slug to fetch value from</td>
+</tr>
+<tr>
+<td>$default</td>
+<td>null</td>
+<td>no</td>
+<td>When a default value is passed as argument it will use that value as return value and echo it if the property value is empty or don&rsquo;t exists</td>
+</tr>
+</tbody></table>
+
+          <h1 id="box-(meta-box)">Box (meta box)</h1>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of the default options.
+ */</span>
+
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">box</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'capabilities'</span> <span class="o">=&gt;</span> <span class="p">[],</span>
+  <span class="s1">'context'</span>      <span class="o">=&gt;</span> <span class="s1">'normal'</span><span class="p">,</span>
+  <span class="s1">'mode'</span>         <span class="o">=&gt;</span> <span class="s1">'standard'</span><span class="p">,</span>
+  <span class="s1">'priority'</span>     <span class="o">=&gt;</span> <span class="s1">'default'</span><span class="p">,</span>
+  <span class="s1">'sort_order'</span>   <span class="o">=&gt;</span> <span class="mi">1000</span><span class="p">,</span>
+  <span class="s1">'title'</span>        <span class="o">=&gt;</span> <span class="s1">''</span>
+<span class="p">]</span> <span class="p">);</span>
+</code></pre>
+
+<p>Documentation of the <code class="prettyprint">box</code> method. <code class="prettyprint">box</code> is a short name for <code class="prettyprint">metabox</code> in Papi.</p>
+
+<h3 id="options">Options</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>capabilities</td>
+<td>array</td>
+<td>Can be a string with a role or capability or a array with many values</td>
+</tr>
+<tr>
+<td>context</td>
+<td>&lsquo;normal&rsquo;</td>
+<td>The same value as for context in <code class="prettyprint">add_meta_box</code></td>
+</tr>
+<tr>
+<td>priority</td>
+<td>&#39;default&rsquo;</td>
+<td>The same value as for priority in <code class="prettyprint">add_meta_box</code></td>
+</tr>
+<tr>
+<td>sort_order</td>
+<td>1000</td>
+<td>Numeric value, lowest value in the meta box will be at the top and the highest value at the bottom</td>
+</tr>
+<tr>
+<td>title</td>
+<td>empty string</td>
+<td>The title of the meta box. This can&rsquo;t be empty. When passing a string as the first argument for box method it will become <code class="prettyprint">array(&#39;title&#39; =&gt; &#39;the title&#39;)</code> automatic</td>
+</tr>
+</tbody></table>
+
+<p><strong>In 2.0.0 the mode option was removed.</strong></p>
+
+<h3 id="callable-method">Callable method</h3>
+
+<p>It&rsquo;s possible to use callable method as a second argument in your box method
+that returns a array with properties or tabs.</p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of using the callable parameter.
+ */</span>
+
+<span class="k">public</span> <span class="k">function</span> <span class="nf">register</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">box</span><span class="p">(</span> <span class="s1">'Content'</span><span class="p">,</span> <span class="p">[</span><span class="nv">$this</span><span class="p">,</span> <span class="s1">'content_box'</span><span class="p">]</span> <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">function</span> <span class="nf">content_box</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">[</span>
+    <span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+      <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'string'</span><span class="p">,</span>
+      <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Name'</span>
+    <span class="p">]</span> <span class="p">),</span>
+    <span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+      <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'text'</span><span class="p">,</span>
+      <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'About'</span>
+    <span class="p">]</span> <span class="p">)</span>
+  <span class="p">];</span>
+<span class="p">}</span>
+</code></pre>
+
+          <h1 id="import-and-export">Import and Export</h1>
+
+<p><strong>Since 2.3.0</strong></p>
+
+<p>Papi Porter is a utility class that you can use to import and export field data. You can create custom porter driver, for example a xml driver.</p>
+
+<h2 id="import">Import</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="c1">// Get the porter class.
+</span><span class="nv">$porter</span> <span class="o">=</span> <span class="nx">papi</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">porter</span><span class="p">();</span>
+
+<span class="c1">// Change value for slugs before driver is finished with the value.
+</span><span class="nv">$porter</span><span class="o">-&gt;</span><span class="na">before</span><span class="p">(</span> <span class="s1">'driver:value'</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span> <span class="nv">$value</span><span class="p">,</span> <span class="nv">$slug</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="nv">$slug</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="s1">'my_string_slug'</span><span class="o">:</span>
+      <span class="k">return</span> <span class="s1">'Before'</span><span class="p">;</span>
+    <span class="k">default</span><span class="o">:</span>
+      <span class="k">return</span> <span class="nv">$value</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span> <span class="p">);</span>
+
+<span class="c1">// Change value for slugs after driver is finished with the value.
+</span><span class="nv">$porter</span><span class="o">-&gt;</span><span class="na">after</span><span class="p">(</span> <span class="s1">'driver:value'</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span> <span class="nv">$value</span><span class="p">,</span> <span class="nv">$slug</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="nv">$slug</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="s1">'my_string_slug'</span><span class="o">:</span>
+      <span class="k">return</span> <span class="s1">'After'</span><span class="p">;</span>
+    <span class="k">default</span><span class="o">:</span>
+      <span class="k">return</span> <span class="nv">$value</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span> <span class="p">);</span>
+
+<span class="c1">// Create a new post.
+</span><span class="nv">$post_id</span> <span class="o">=</span> <span class="nx">wp_insert_post</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'post_title'</span> <span class="o">=&gt;</span> <span class="s1">'Test Papi Import'</span><span class="p">,</span>
+  <span class="s1">'post_type'</span>  <span class="o">=&gt;</span> <span class="s1">'page'</span>  
+<span class="p">]</span> <span class="p">);</span>
+
+<span class="c1">// Import data, will return true or false.
+</span><span class="nv">$result</span> <span class="o">=</span> <span class="nv">$porter</span><span class="o">-&gt;</span><span class="na">import</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'post_id'</span>   <span class="o">=&gt;</span> <span class="nv">$post_id</span><span class="p">,</span>
+  <span class="s1">'page_type'</span> <span class="o">=&gt;</span> <span class="s1">'article-page-type'</span>
+<span class="p">],</span> <span class="p">[</span>
+  <span class="s1">'my_string_slug'</span> <span class="o">=&gt;</span> <span class="s1">'Hello'</span>
+<span class="p">]</span> <span class="p">);</span>
+
+<span class="c1">// Done! The value of `string_test` will be `After`.
+</span></code></pre>
+
+<p>This is a simple example that will import a string value to a new post. The value can be changed before and after the porter driver does the magic with the value.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$options</td>
+<td></td>
+<td>yes</td>
+<td>Array, post or post id (that has a page type id in postmeta table).</td>
+</tr>
+<tr>
+<td>$fields</td>
+<td>array</td>
+<td> no</td>
+<td> If true only the value will be return for fields and not all options.</td>
+</tr>
+</tbody></table>
+
+<h2 id="drivers">Drivers</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of adding a driver.
+ */</span>
+
+<span class="nv">$porter</span><span class="o">-&gt;</span><span class="na">driver</span><span class="p">(</span> <span class="k">new</span> <span class="nx">Papi_Porter_Driver_Example</span> <span class="p">);</span>
+
+<span class="sd">/**
+ * Example of change driver.
+ */</span>
+
+<span class="nv">$porter</span><span class="o">-&gt;</span><span class="na">driver</span><span class="p">(</span> <span class="s1">'example'</span> <span class="p">);</span>
+
+<span class="sd">/**
+ * Example of driver class.
+ */</span>
+<span class="k">class</span> <span class="nc">Papi_Porter_Driver_Example</span> <span class="k">extends</span> <span class="nx">Papi_Porter_Driver</span> <span class="p">{</span>
+
+    <span class="sd">/**
+     * The driver name.
+     *
+     * @var string
+     */</span>
+    <span class="k">protected</span> <span class="nv">$name</span> <span class="o">=</span> <span class="s1">'example'</span><span class="p">;</span>
+
+    <span class="sd">/**
+     * Alias for driver name.
+     *
+     * @var string
+     */</span>
+    <span class="k">protected</span> <span class="nv">$alias</span> <span class="o">=</span> <span class="s1">'alias'</span><span class="p">;</span>
+
+    <span class="sd">/**
+     * Get value that should be saved.
+     *
+     * @param  array $options
+     *
+     * @return mixed
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">get_value</span><span class="p">(</span> <span class="k">array</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[]</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Do some magic with the value.
+</span>        <span class="k">return</span> <span class="nv">$options</span><span class="p">[</span><span class="s1">'value'</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>Papi has a <a href="https://github.com/wp-papi/papi/blob/master/src/includes/porter/class-papi-porter-driver-core.php">core</a> driver that is default. A driver can have a alias and the core driver alias is <code class="prettyprint">papi</code>.</p>
+
+<p>To change driver that the <code class="prettyprint">import</code> method uses you can do it with <code class="prettyprint">use_driver</code> or <code class="prettyprint">driver</code> method that takes the name or alias as argument.</p>
+
+<p>To add a custom driver that the <code class="prettyprint">import</code> method can use you can add <code class="prettyprint">add_driver</code> or <code class="prettyprint">driver</code> method that takes the driver instance as argument.</p>
+
+<h2 id="export">Export</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="c1">// Get the porter class.
+</span><span class="nv">$porter</span> <span class="o">=</span> <span class="nx">papi</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">porter</span><span class="p">();</span>
+
+<span class="c1">// Export fields.
+</span><span class="nv">$fields</span>  <span class="o">=</span> <span class="nv">$porter</span><span class="o">-&gt;</span><span class="na">export</span><span class="p">(</span> <span class="mi">7</span> <span class="p">);</span>
+
+<span class="c1">// Example output.
+</span><span class="p">[</span>
+ <span class="s1">'Content'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+   <span class="s1">'my_string_slug'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+     <span class="s1">'after_html'</span>   <span class="o">=&gt;</span> <span class="s1">''</span><span class="p">,</span>
+     <span class="s1">'before_html'</span>  <span class="o">=&gt;</span> <span class="s1">''</span><span class="p">,</span>
+     <span class="s1">'capabilities'</span> <span class="o">=&gt;</span> <span class="p">[],</span>
+     <span class="s1">'description'</span>  <span class="o">=&gt;</span> <span class="s1">''</span><span class="p">,</span>
+     <span class="s1">'disabled'</span>     <span class="o">=&gt;</span> <span class="kc">false</span><span class="p">,</span>
+     <span class="s1">'lang'</span>         <span class="o">=&gt;</span> <span class="kc">false</span><span class="p">,</span>
+     <span class="s1">'raw'</span>          <span class="o">=&gt;</span> <span class="kc">false</span><span class="p">,</span>
+     <span class="s1">'required'</span>     <span class="o">=&gt;</span> <span class="kc">false</span><span class="p">,</span>
+     <span class="s1">'rules'</span>        <span class="o">=&gt;</span> <span class="p">[],</span>
+     <span class="s1">'settings'</span>     <span class="o">=&gt;</span> <span class="p">[],</span>
+     <span class="s1">'sidebar'</span>      <span class="o">=&gt;</span> <span class="kc">true</span><span class="p">,</span>
+     <span class="s1">'slug'</span>         <span class="o">=&gt;</span> <span class="s1">'papi_top_module'</span><span class="p">,</span>
+     <span class="s1">'sort_order'</span>   <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">,</span>
+     <span class="s1">'title'</span>        <span class="o">=&gt;</span> <span class="s1">'Name'</span><span class="p">,</span>
+     <span class="s1">'type'</span>         <span class="o">=&gt;</span> <span class="s1">'string'</span><span class="p">,</span>
+     <span class="s1">'value'</span>        <span class="o">=&gt;</span> <span class="s1">'After'</span>
+   <span class="p">]</span>
+ <span class="p">]</span>
+<span class="p">]</span>
+</code></pre>
+
+<p>The <code class="prettyprint">export</code> method will return array with box title as key and array of properties with all options and the value as box value.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$post_id</td>
+<td></td>
+<td>yes</td>
+<td></td>
+</tr>
+<tr>
+<td>$only_values</td>
+<td>false</td>
+<td> no</td>
+<td> If true only the value will be return for fields and not all options.</td>
+</tr>
+</tbody></table>
+
+          <h1 id="option-type">Option type</h1>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of a option type with no properties.
+ */</span>
+
+<span class="k">class</span> <span class="nc">Header_Option_Type</span> <span class="k">extends</span> <span class="nx">Papi_Option_Type</span> <span class="p">{</span>
+
+  <span class="sd">/**
+   * The option type meta options.
+   *
+   * @return array
+   */</span>
+
+  <span class="k">public</span> <span class="k">function</span> <span class="nf">meta</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">[</span>
+      <span class="s1">'menu'</span> <span class="o">=&gt;</span> <span class="s1">'options-general.php'</span><span class="p">,</span>
+      <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Header'</span>
+    <span class="p">];</span>
+  <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre>
+
+<p>Option type class extends the <a href="#page-type">page type class</a> so you can create options pages with Papi! Option types will not be showed on Papi&rsquo;s tool page since they don&rsquo;t belong to a post type.</p>
+
+<h3 id="differents-between-option-type-and-a-page-type">Differents between option type and a page type</h3>
+
+<ul>
+<li>Does not save the option type id in the database since options don&rsquo;t have a post id. So you can&rsquo;t have different option types that has the same property slug.</li>
+<li>The <code class="prettyprint">page_type</code> method is named <code class="prettyprint">option_type</code>.</li>
+</ul>
+
+<h3 id="meta-method">meta method</h3>
+
+<p>The <code class="prettyprint">option_type</code> is a required method of the option type class. It should return an array containing the required keys.</p>
+
+<p><strong>Since 2.4.0</strong> the method is called <code class="prettyprint">meta</code> the old <code class="prettyprint">option_type</code> method will still work but is deprecated and not recommended to use.</p>
+
+<table><thead>
+<tr>
+<th>Options</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>capability</td>
+<td>no</td>
+<td>The capability that are allowed to access the page. Default is <code class="prettyprint">manage_options</code></td>
+</tr>
+<tr>
+<td>menu</td>
+<td> yes</td>
+<td>The menu to register the sub menu page on</td>
+</tr>
+<tr>
+<td>name</td>
+<td>yes</td>
+<td>The name of the option type</td>
+</tr>
+</tbody></table>
+
+<h2 id="menu">Menu</h2>
+
+<p>Papi does only register submenu pages, so if you want a custom admin page you have to add it yourself.</p>
+
+<h2 id="namespaces">Namespaces</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Foo\Bar</span><span class="p">;</span>
+
+<span class="sd">/**
+ * Example of a option type with namespace.
+ */</span>
+
+<span class="k">class</span> <span class="nc">Test_Option_Type</span> <span class="k">extends</span> <span class="nx">\Papi_Option_Type</span> <span class="p">{}</span>
+</code></pre>
+
+<p>Papi has no problem to work with option types that have namespaces.</p>
+
+          <h1 id="page-type">Page type</h1>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of a page type with no properties.
+ */</span>
+
+<span class="k">class</span> <span class="nc">Video_Page_Type</span> <span class="k">extends</span> <span class="nx">Papi_Page_Type</span> <span class="p">{</span>
+
+  <span class="sd">/**
+   * The page type meta options.
+   *
+   * @return array
+   */</span>
+
+  <span class="k">public</span> <span class="k">function</span> <span class="nf">meta</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">[</span>
+      <span class="s1">'name'</span>        <span class="o">=&gt;</span> <span class="s1">'Video page'</span><span class="p">,</span>
+      <span class="s1">'description'</span> <span class="o">=&gt;</span> <span class="s1">'A page where you can embed videos'</span><span class="p">,</span>
+      <span class="s1">'template'</span>    <span class="o">=&gt;</span> <span class="s1">'pages/video-page.php'</span>
+    <span class="p">];</span>
+  <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre>
+
+<h3 id="meta-method">meta method</h3>
+
+<p>The <code class="prettyprint">meta</code> is a required method of the page type class. It should return an array containing the required keys.</p>
+
+<p><strong>Since 2.4.0</strong> the method is called <code class="prettyprint">meta</code> the old <code class="prettyprint">page_type</code> method will still work but is deprecated and not recommended to use.</p>
+
+<table><thead>
+<tr>
+<th>Options</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>name</td>
+<td>yes</td>
+<td>The name of the page type</td>
+</tr>
+<tr>
+<td>child_types</td>
+<td>no</td>
+<td>Array of page type that will be available when <code class="prettyprint">parent_post</code> query string exists. The array values should be the page type id. <strong>Since 2.3.0</strong></td>
+</tr>
+<tr>
+<td>description</td>
+<td>no</td>
+<td>The description of the page type</td>
+</tr>
+<tr>
+<td>fill_labels</td>
+<td> no</td>
+<td>When this is true it will add the page type name to <code class="prettyprint">add_new_item</code>, <code class="prettyprint">edit_item</code> and <code class="prettyprint">view_item</code> label. Both in WordPress admin and the admin bar on the front. You can override this with the <code class="prettyprint">labels</code> array.</td>
+</tr>
+<tr>
+<td>labels</td>
+<td>no</td>
+<td>With this you can handle the <code class="prettyprint">labels</code> object that exists on a <a href="http://codex.wordpress.org/Function_Reference/get_post_type_object">post type</a>. So this means that you can change &ldquo;Add New Page&rdquo; for every page type and have something like <code class="prettyprint">Add New Startpage</code>. Just create a array with the <code class="prettyprint">labels</code> keys and values on your page type meta array</td>
+</tr>
+<tr>
+<td>post_type</td>
+<td>no</td>
+<td>Array of post types that the page type should be registered on. Default is <code class="prettyprint">page</code></td>
+</tr>
+<tr>
+<td>sort_order</td>
+<td>no</td>
+<td>The sort order number of the page type</td>
+</tr>
+<tr>
+<td>standard_type</td>
+<td>no</td>
+<td>True or false if standard page type should be displayed on <code class="prettyprint">Add New Page</code> when <code class="prettyprint">parent_post</code> query string exists or when you want to hide standard page when a post type only has one page type, like <code class="prettyprint">only_page_type</code> filter. <strong>Since 2.3.0</strong></td>
+</tr>
+<tr>
+<td>template</td>
+<td>no</td>
+<td>The template file to render. This can be both dot templates <code class="prettyprint">pages.article</code> or <code class="prettyprint">pages/article.php</code>. Extension is not required. Dot templates and extension requirement does only exists in 2.3.0 and above.</td>
+</tr>
+<tr>
+<td>thumbnail</td>
+<td>no</td>
+<td>The thumbnail image that should appear on the add new page</td>
+</tr>
+</tbody></table>
+<pre><code class="highlight javascript"><span class="cm">/**
+ * Example of template structure.
+ */</span>
+
+<span class="nx">themes</span><span class="o">/</span>
+  <span class="nx">my</span><span class="o">-</span><span class="nx">theme</span><span class="o">/</span>
+    <span class="nx">pages</span><span class="o">/</span>
+      <span class="nx">about</span><span class="o">-</span><span class="nx">page</span><span class="p">.</span><span class="nx">php</span>
+      <span class="nx">contact</span><span class="o">-</span><span class="nx">page</span><span class="p">.</span><span class="nx">php</span>
+      <span class="nx">video</span><span class="o">-</span><span class="nx">page</span><span class="p">.</span><span class="nx">php</span>
+</code></pre>
+
+<p>When you using <code class="prettyprint">template</code> key you can get a better structure of all pages type you are using and which template file it used.</p>
+
+<p>When creating a new page you will get a new view before you get the edit view for your page where you should choose which page type to use. This will happen for all post types that uses page types.</p>
+
+<h3 id="box-method">box method</h3>
+
+<p>This method is used to register all properties, tabs and remove meta boxes as described above.</p>
+
+<p>The box method can has callable method as the second argument that returns a array with properties or tabs.</p>
+
+<p>Read more about that under <a href="#box-(meta-box)">box section</a>.</p>
+
+<h3 id="display-method">display method</h3>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `display` method.
+ */</span>
+
+<span class="k">public</span> <span class="k">function</span> <span class="nf">display</span><span class="p">(</span> <span class="nv">$post_type</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span> <span class="nv">$post_type</span> <span class="o">===</span> <span class="s1">'post'</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>This method is use to tell if the page type should be display or not on <code class="prettyprint">Add New Page</code> page.</p>
+
+<p>The method will take a <code class="prettyprint">$post_type</code> argument. This is useful when the page type is register one more then one post type.</p>
+
+<p>Returning anything else then true will hide the page type.</p>
+
+<p>Default value is <code class="prettyprint">true</code>.</p>
+
+<h3 id="remove-method">remove method</h3>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `register` method.
+ */</span>
+
+<span class="k">public</span> <span class="k">function</span> <span class="nf">register</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// A single metabox
+</span>  <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">remove</span><span class="p">(</span> <span class="s1">'comments'</span> <span class="p">);</span>
+
+  <span class="c1">// Multiple metaboxes
+</span>  <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">remove</span><span class="p">(</span> <span class="p">[</span><span class="s1">'comments'</span><span class="p">,</span> <span class="s1">'editor'</span><span class="p">]</span> <span class="p">);</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>It&rsquo;s easy to remove metaboxes with the <code class="prettyprint">remove</code> method.
+You can remove both post type support and meta boxes with <code class="prettyprint">remove.</code></p>
+
+<p>Check out <a href="http://codex.wordpress.org/Function_Reference/remove_post_type_support#Parameters">remove_post_type_support</a> for right post type support or <a href="https://codex.wordpress.org/Function_Reference/remove_meta_box#Parameters">remove_meta_box</a> for meta box slugs.</p>
+
+<h2 id="namespaces">Namespaces</h2>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Foo\Bar</span><span class="p">;</span>
+
+<span class="sd">/**
+ * Example of a page type with namespace.
+ */</span>
+
+<span class="k">class</span> <span class="nc">Test_Page_Type</span> <span class="k">extends</span> <span class="nx">\Papi_Page_Type</span> <span class="p">{}</span>
+</code></pre>
+
+<p>Papi has no problem to work with page types that have namespaces.</p>
+
+          <h1 id="properties">Properties</h1>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of the default options.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'after_class'</span>  <span class="o">=&gt;</span> <span class="s1">''</span><span class="p">,</span>
+  <span class="s1">'after_html'</span>   <span class="o">=&gt;</span> <span class="s1">''</span><span class="p">,</span>
+  <span class="s1">'before_class'</span> <span class="o">=&gt;</span> <span class="s1">''</span><span class="p">,</span>
+  <span class="s1">'before_html'</span>  <span class="o">=&gt;</span> <span class="s1">''</span><span class="p">,</span>
+  <span class="s1">'capabilities'</span> <span class="o">=&gt;</span> <span class="p">[],</span>
+  <span class="s1">'default'</span>      <span class="o">=&gt;</span> <span class="s1">''</span><span class="p">,</span>
+  <span class="s1">'description'</span>  <span class="o">=&gt;</span> <span class="s1">''</span><span class="p">,</span>
+  <span class="s1">'disabled'</span>     <span class="o">=&gt;</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="s1">'lang'</span>         <span class="o">=&gt;</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="s1">'overwrite'</span>    <span class="o">=&gt;</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="s1">'raw'</span>          <span class="o">=&gt;</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="s1">'required'</span>     <span class="o">=&gt;</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="s1">'rules'</span>        <span class="o">=&gt;</span> <span class="p">[],</span>
+  <span class="s1">'settings'</span>     <span class="o">=&gt;</span> <span class="p">[],</span>
+  <span class="s1">'sidebar'</span>      <span class="o">=&gt;</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="s1">'slug'</span>         <span class="o">=&gt;</span> <span class="s1">''</span><span class="p">,</span>
+  <span class="s1">'sort_order'</span>   <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">,</span>
+  <span class="s1">'title'</span>        <span class="o">=&gt;</span> <span class="s1">''</span><span class="p">,</span>
+  <span class="s1">'type'</span>         <span class="o">=&gt;</span> <span class="s1">'string'</span><span class="p">,</span>
+  <span class="s1">'value'</span>        <span class="o">=&gt;</span> <span class="s1">''</span>
+<span class="p">]</span> <span class="p">)</span>
+</code></pre>
+
+<p>Papi has many different core properties (a field is a property in the page type) to start with and you can easy create your own using our <a href="https://github.com/wp-papi/generator-property">Yeoman generator</a>. The are several keys that all properties have.</p>
+
+<p>The property type is loaded from the page type file instead of saving it in the database.</p>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>after_class</td>
+<td>string</td>
+<td>Add custom css class to after div. <strong>Since 2.4.0</strong></td>
+</tr>
+<tr>
+<td>after_html</td>
+<td> string</td>
+<td>Output html after property html. Can be a html string or a callable function. Will be wrapped in a div with class <code class="prettyprint">papi-after-html</code> and a data attribute with the property type. <strong>Since 2.3.0</strong></td>
+</tr>
+<tr>
+<td>after_class</td>
+<td> string</td>
+<td>Add custom css class to before div. <strong>Since 2.4.0</strong></td>
+</tr>
+<tr>
+<td>before_html</td>
+<td> string</td>
+<td>Output html before property html. Can be a html string or a callable function. Will be wrapped in a div with class <code class="prettyprint">papi-before-html</code> and a data attribute with the property type. <strong>Since 2.3.0</strong></td>
+</tr>
+<tr>
+<td>capabilities</td>
+<td>array</td>
+<td>Can be a string with a role or capability or a array with many values</td>
+</tr>
+<tr>
+<td>default</td>
+<td>empty string</td>
+<td>The default value that should be used when value is empty.</td>
+</tr>
+<tr>
+<td>description</td>
+<td>empty string</td>
+<td>The introduction text that will appear below the title text of the property. You could write your help text here. With <code class="prettyprint">\n</code> you can create new lines in the description</td>
+</tr>
+<tr>
+<td>disabled</td>
+<td>false</td>
+<td>Disable the property, won’t show in WordPress admin</td>
+</tr>
+<tr>
+<td>display</td>
+<td> true</td>
+<td> When using this key you can hide the property being displayed, it will have the class <code class="prettyprint">papi-hide</code>. <strong>Since 2.4.0</strong></td>
+</tr>
+<tr>
+<td>lang</td>
+<td>false</td>
+<td>When using this key you can specify which language will show the property</td>
+</tr>
+<tr>
+<td>overwrite</td>
+<td>false</td>
+<td> When property is used on post page you can overwrite post object properties with property value when <code class="prettyprint">overwrite</code> is true.</td>
+</tr>
+<tr>
+<td>raw</td>
+<td>false</td>
+<td>This will render the property without a table, good to use when creating a custom property that uses other</td>
+</tr>
+<tr>
+<td>post_type</td>
+<td> empty string</td>
+<td>The post type that the property will be rendered for. Default is empty string that will be assigned the current post_type. <strong>Since 2.4.2</strong></td>
+</tr>
+</tbody></table>
+
+<p>properties
+rules        | array        | <a href="#conditional-logic">Read more about conditional logic</a>
+required     | false        | By default all fields are non required in Papi but this can be changed with required option
+sidebar      | true         | Boolean that shows the sidebar on each property. If false the sidebar won’t show
+settings     | array        | Array with custom settings for the property
+sort_order   | 1000         | Numeric value, lowest value in the meta box will be at the top and the highest value at the bottom
+slug         | empty string | The slug of property. If empty or not used the title will be generated to slug value
+title        | empty string | The title of the property. Can be empty for blank title
+type         | empty string | The property type (lower case is preferred to use)
+value        | empty string | The default value that are presented in the property</p>
+
+<p><strong>Note:</strong> be sure to have different slug for each properties on a page type, the same slug will not work great and you will lose data if you are using same slug for multiple properties.</p>
+
+<h2 id="bool">Bool</h2>
+
+<p><strong>type</strong> <code class="prettyprint">bool</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of bool.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'True or false?'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'my_true_or_false_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'bool'</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="nx">boolean</span> <span class="kc">true</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>The property output a single checkbox, when clicked the output value will be true otherwise false.</p>
+
+<h3 id="settings">Settings</h3>
+
+<p>No settings exists.</p>
+
+<h2 id="checkbox">Checkbox</h2>
+
+<p><strong>type</strong> <code class="prettyprint">checkbox</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of checkbox.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'Categories'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'my_categories_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'checkbox'</span><span class="p">,</span>
+  <span class="s1">'settings'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+    <span class="s1">'items'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+      <span class="s1">'White'</span> <span class="o">=&gt;</span> <span class="s1">'#ffffff'</span><span class="p">,</span>
+      <span class="s1">'Black'</span> <span class="o">=&gt;</span> <span class="s1">'#000000'</span>
+    <span class="p">]</span>
+  <span class="p">]</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="k">array</span>
+<span class="p">(</span>
+  <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'#ffffff'</span>
+<span class="p">)</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>With this property you can add multiple checkboxes. The key is the value that the user will se in the WordPress admin and the value is the value saved in the database.</p>
+
+<h3 id="settings">Settings</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>items</td>
+<td>array</td>
+<td>Array with checkboxes, value or key/value</td>
+</tr>
+<tr>
+<td>selected</td>
+<td>array</td>
+<td>The seleceted key or array of keys</td>
+</tr>
+</tbody></table>
+
+<h2 id="color">Color</h2>
+
+<p><strong>type</strong> <code class="prettyprint">color</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of color.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'Color'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'my_color_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'color'</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="nx">string</span> <span class="s1">'#ffffff'</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>The property output the WordPress color picker.</p>
+
+<h3 id="settings">Settings</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>show_input</td>
+<td>true</td>
+<td>Show the text input</td>
+</tr>
+<tr>
+<td>palettes</td>
+<td>array</td>
+<td>Array with hex colors</td>
+</tr>
+</tbody></table>
+
+<h2 id="datetime">Datetime</h2>
+
+<p><strong>type</strong> <code class="prettyprint">datetime</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of datetime.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'Datetime'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'my_datetime_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'datetime'</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="nx">string</span> <span class="s1">'2014-11-21'</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>The date property has a picker build in using <a href="https://github.com/owenmead/Pikaday">Pikaday</a> with time support.</p>
+
+<h3 id="settings">Settings</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>format</td>
+<td>YYYY-MM-DD hh:mm:ss</td>
+<td>Show the text input</td>
+</tr>
+<tr>
+<td>show_seconds</td>
+<td>false</td>
+<td>Array with hex colors</td>
+</tr>
+<tr>
+<td>show_time</td>
+<td>true</td>
+<td>Array with hex colors</td>
+</tr>
+<tr>
+<td>use_24_hours</td>
+<td>false</td>
+<td>Array with hex colors</td>
+</tr>
+</tbody></table>
+
+<h2 id="divider">Divider</h2>
+
+<p><strong>type</strong> <code class="prettyprint">divider</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of divider.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span>       <span class="o">=&gt;</span> <span class="s1">'Divider'</span><span class="p">,</span>
+  <span class="s1">'type'</span>        <span class="o">=&gt;</span> <span class="s1">'divider'</span><span class="p">,</span>
+  <span class="s1">'description'</span> <span class="o">=&gt;</span> <span class="s1">'Non volutpat ultricies bibendum odio luctus.'</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="nx">string</span> <span class="s1">'#ffffff'</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This property don&rsquo;t output any form or something like that. It outputs a h3 tag with the title inside and the description below.</p>
+
+<h3 id="settings">Settings</h3>
+
+<p>No settings exists.</p>
+
+<h2 id="dropdown">Dropdown</h2>
+
+<p><strong>type</strong> <code class="prettyprint">dropdown</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of select.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'Dropdown'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'my_dropdown_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'dropdown'</span><span class="p">,</span>
+  <span class="s1">'settings'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+    <span class="s1">'items'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+      <span class="s1">'White'</span> <span class="o">=&gt;</span> <span class="s1">'#ffffff'</span><span class="p">,</span>
+      <span class="s1">'Black'</span> <span class="o">=&gt;</span> <span class="s1">'#000000'</span>
+    <span class="p">]</span>
+  <span class="p">]</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="nx">string</span> <span class="s1">'#ffffff'</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>With this property you can add a dropdown. The key is the value that the user will se in the WordPress admin and the value is the value saved in the database.</p>
+
+<h3 id="settings">Settings</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>items</td>
+<td>array</td>
+<td>Array with options, value or key/value</td>
+</tr>
+<tr>
+<td>placeholder</td>
+<td>empty string</td>
+<td>Placeholder text that&rsquo;s displayed when no option is slected.</td>
+</tr>
+<tr>
+<td>selected</td>
+<td>empty string</td>
+<td>The select item that will be selected from start. The value should match a key of your items</td>
+</tr>
+<tr>
+<td>select2</td>
+<td>true</td>
+<td>If true Select2 will be used, if false the native browser dropdown will be used. (since 2.2.0)</td>
+</tr>
+</tbody></table>
+
+<h2 id="editor">Editor</h2>
+
+<p><strong>type</strong> <code class="prettyprint">editor</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of Property Editor.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Editor'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'my_editor_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'editor'</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="c1">// String of text.
+</span></code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>The WordPress editor.</p>
+
+<h3 id="settings">Settings</h3>
+
+<p>No settings exists.</p>
+
+<h2 id="file">File</h2>
+
+<p><strong>type</strong> <code class="prettyprint">file</code>
+<strong>since</strong> <code class="prettyprint">2.2.0</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of file.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'File'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'my_file_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'file'</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="k">stdClass</span> <span class="nx">Object</span>
+<span class="p">(</span>
+      <span class="p">[</span><span class="nb">file</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'2014/09/text.txt'</span>
+      <span class="p">[</span><span class="nx">alt</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">''</span>
+      <span class="p">[</span><span class="nx">caption</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'Caption text'</span>
+      <span class="p">[</span><span class="nx">description</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'Description text'</span>
+      <span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">6</span>
+      <span class="p">[</span><span class="nx">is_image</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="kc">false</span>
+      <span class="p">[</span><span class="nx">title</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'Title text'</span>
+      <span class="p">[</span><span class="nx">url</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'http://site.com/wp-content/uploads/2014/09/test.txt'</span>
+<span class="p">)</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>With this property you can add a file from the WordPress media library. If the <code class="prettyprint">multiple</code> setting is set to true the output will be a array with objects instead of just one object.</p>
+
+<p><img alt="File example" src="images/docs/property-file.png" /></p>
+
+<h3 id="settings">Settings</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>multiple</td>
+<td>false</td>
+<td>If true you can add multiple files</td>
+</tr>
+</tbody></table>
+
+<h2 id="flexible">Flexible</h2>
+
+<p><strong>type</strong> <code class="prettyprint">flexible</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of Flexible.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'Flexible'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'my_flexible_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'flexible'</span><span class="p">,</span>
+  <span class="s1">'settings'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+    <span class="s1">'items'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+      <span class="p">[</span>
+        <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Posts'</span><span class="p">,</span>
+        <span class="s1">'items'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+          <span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+            <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'string'</span><span class="p">,</span>
+            <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Title'</span><span class="p">,</span>
+            <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'my_string_slug'</span>
+          <span class="p">]</span> <span class="p">),</span>
+          <span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+            <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'post'</span><span class="p">,</span>
+            <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Post'</span><span class="p">,</span>
+            <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'my_post_slug'</span>
+          <span class="p">]</span> <span class="p">)</span>
+        <span class="p">]</span>
+      <span class="p">],</span>
+      <span class="p">[</span>
+        <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Image'</span><span class="p">,</span>
+        <span class="s1">'items'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+          <span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+            <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'string'</span><span class="p">,</span>
+            <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Title'</span><span class="p">,</span>
+            <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'my_title_slug'</span>
+          <span class="p">]</span> <span class="p">),</span>
+          <span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+            <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'image'</span><span class="p">,</span>
+            <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Image'</span><span class="p">,</span>
+            <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'my_image_slug'</span>
+          <span class="p">]</span> <span class="p">)</span>
+        <span class="p">]</span>
+      <span class="p">]</span>
+    <span class="p">]</span>
+  <span class="p">]</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="k">array</span>
+<span class="p">(</span>
+  <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">array</span>
+  <span class="p">(</span>
+    <span class="p">[</span><span class="nx">my_string_slug</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'Test 1'</span>
+    <span class="p">[</span><span class="nx">my_post_slug</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'WP_Post object'</span><span class="p">,</span>
+    <span class="p">[</span><span class="nx">_layout</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'posts'</span>
+  <span class="p">)</span>
+
+  <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">array</span>
+  <span class="p">(</span>
+    <span class="p">[</span><span class="nx">my_title_slug</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'Test 2'</span>
+    <span class="p">[</span><span class="nx">my_image_slug</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'Image object'</span><span class="p">,</span>
+    <span class="p">[</span><span class="nx">_layout</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'image'</span>
+  <span class="p">)</span>
+<span class="p">)</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>The flexible property can create a repeater with different layouts that contains sub fields. That&rsquo;s the big different from a <a href="#repeater">repeater property</a>. You can&rsquo;t have a flexible or repeater in a flexible.</p>
+
+<p><img alt="Flexible example" src="images/docs/property-flexible.png" /></p>
+
+<h3 id="settings">Settings</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>add_new_label</td>
+<td>&lsquo;Add new row&rsquo;</td>
+<td> Add new label text. <strong>Since 2.4.2</strong></td>
+</tr>
+<tr>
+<td>closed_rows </td>
+<td>false</td>
+<td> When this is true the existing rows will be closed when the page is loaded.</td>
+</tr>
+<tr>
+<td>items</td>
+<td>array</td>
+<td>Array of key/value. See <code class="prettyprint">Items key/value</code> section.</td>
+</tr>
+<tr>
+<td>layout</td>
+<td>&#39;table&rsquo;</td>
+<td> Choose between <code class="prettyprint">table</code> or <code class="prettyprint">row</code>.</td>
+</tr>
+<tr>
+<td>limit</td>
+<td>-1 (no limit)</td>
+<td>Prevent how many post references that can be added.</td>
+</tr>
+</tbody></table>
+
+<h3 id="items-key/value">Items key/value</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>items</td>
+<td>array</td>
+<td>The array of properties, the same key/values as <code class="prettyprint">$this-&gt;property</code> method or <code class="prettyprint">papi_property</code> function has. You can&rsquo;t use repeater or flexible inside a flexible.</td>
+</tr>
+<tr>
+<td>slug</td>
+<td>string</td>
+<td>The slug of the flexible layout. <strong>This is not required</strong>. If you don&rsquo;t have a slug value it will be generated from the title.</td>
+</tr>
+<tr>
+<td>title</td>
+<td>string</td>
+<td> The title of the flexible layout.</td>
+</tr>
+</tbody></table>
+
+<h3 id="filters">Filters</h3>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/property/flexible/exclude` filter.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/property/flexible/exclude'</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span> <span class="nv">$exclude</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nb">array_merge</span><span class="p">(</span> <span class="nv">$exclude</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">'string'</span>
+  <span class="p">]</span> <span class="p">);</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Filter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>papi/property/flexible/exclude</td>
+<td>Prevent properties from render and working in flexible</td>
+</tr>
+</tbody></table>
+
+<h2 id="gallery">Gallery</h2>
+
+<p><strong>type</strong> <code class="prettyprint">gallery</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of gallery.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Gallery'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'my_gallery_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'gallery'</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="k">array</span><span class="p">(</span>
+  <span class="k">stdClass</span> <span class="nx">Object</span>
+  <span class="p">(</span>
+      <span class="p">[</span><span class="nx">width</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">800</span>
+      <span class="p">[</span><span class="nx">height</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">600</span>
+      <span class="p">[</span><span class="nb">file</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'2014/09/cube.jpg'</span>
+      <span class="p">[</span><span class="nx">sizes</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">array</span>
+        <span class="p">(</span>
+          <span class="p">[</span><span class="nx">thumbnail</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">array</span>
+          <span class="p">(</span>
+            <span class="p">[</span><span class="nb">file</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'cube-150x150.jpg'</span>
+            <span class="p">[</span><span class="nx">width</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">150</span>
+            <span class="p">[</span><span class="nx">height</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">150</span>
+            <span class="p">[</span><span class="nx">mime</span><span class="o">-</span><span class="nx">type</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'image/jpeg'</span>
+          <span class="p">)</span>
+
+          <span class="p">[</span><span class="nx">medium</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">array</span>
+          <span class="p">(</span>
+            <span class="p">[</span><span class="nb">file</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'cube-300x225.jpg'</span>
+            <span class="p">[</span><span class="nx">width</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">300</span>
+            <span class="p">[</span><span class="nx">height</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">225</span>
+            <span class="p">[</span><span class="nx">mime</span><span class="o">-</span><span class="nx">type</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'image/jpeg'</span>
+          <span class="p">)</span>
+
+      <span class="p">)</span>
+
+      <span class="p">[</span><span class="nx">image_meta</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">array</span>
+        <span class="p">(</span>
+          <span class="p">[</span><span class="nx">aperture</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+          <span class="p">[</span><span class="nx">credit</span><span class="p">]</span> <span class="o">=&gt;</span>
+          <span class="p">[</span><span class="nx">camera</span><span class="p">]</span> <span class="o">=&gt;</span>
+          <span class="p">[</span><span class="nx">caption</span><span class="p">]</span> <span class="o">=&gt;</span>
+          <span class="p">[</span><span class="nx">created_timestamp</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+          <span class="p">[</span><span class="nx">copyright</span><span class="p">]</span> <span class="o">=&gt;</span>
+          <span class="p">[</span><span class="nx">focal_length</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+          <span class="p">[</span><span class="nx">iso</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+          <span class="p">[</span><span class="nx">shutter_speed</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+          <span class="p">[</span><span class="nx">title</span><span class="p">]</span> <span class="o">=&gt;</span>
+          <span class="p">[</span><span class="nx">orientation</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">1</span>
+        <span class="p">)</span>
+      <span class="p">[</span><span class="nx">alt</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'Alt text'</span>
+      <span class="p">[</span><span class="nx">caption</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'Caption text'</span>
+      <span class="p">[</span><span class="nx">description</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'Description text'</span>
+      <span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">6</span>
+      <span class="p">[</span><span class="nx">is_image</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">1</span>
+      <span class="p">[</span><span class="nx">title</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'Title text'</span>
+      <span class="p">[</span><span class="nx">url</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'http://site.com/wp-content/uploads/2014/09/cube.jpg'</span>
+  <span class="p">)</span>
+<span class="p">)</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>With this property you can add a multiple image from the WordPress media library.</p>
+
+<h3 id="settings">Settings</h3>
+
+<p>No settings exists.</p>
+
+<h2 id="hidden">Hidden</h2>
+
+<p><strong>type</strong> <code class="prettyprint">hidden</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of hidden.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'my_hidden_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'hidden'</span><span class="p">,</span>
+  <span class="s1">'value'</span> <span class="o">=&gt;</span> <span class="s1">'hidden value'</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ * The reference property does not save any values.
+ */</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>Hidden input field.</p>
+
+<h3 id="settings">Settings</h3>
+
+<p>No settings exists.</p>
+
+<h2 id="html">Html</h2>
+
+<p><strong>type</strong> <code class="prettyprint">html</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of html.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'Information'</span><span class="p">,</span>
+  <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'html'</span><span class="p">,</span>
+  <span class="s1">'settings'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+    <span class="s1">'html'</span> <span class="o">=&gt;</span> <span class="s1">'&lt;p&gt;Hello, world&lt;/p&gt;'</span>
+  <span class="p">]</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ * The html property does not save any values.
+ */</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>The property output custom html row on the page type in WordPress admin.</p>
+
+<h3 id="settings">Settings</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>html</td>
+<td>empty string</td>
+<td>String with html or a callable function or method.</td>
+</tr>
+</tbody></table>
+
+<h2 id="image">Image</h2>
+
+<p><strong>type</strong> <code class="prettyprint">image</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of image.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Image'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'my_image_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'image'</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="k">stdClass</span> <span class="nx">Object</span>
+<span class="p">(</span>
+      <span class="p">[</span><span class="nx">width</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">800</span>
+      <span class="p">[</span><span class="nx">height</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">600</span>
+      <span class="p">[</span><span class="nb">file</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'2014/09/cube.jpg'</span>
+      <span class="p">[</span><span class="nx">sizes</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">array</span>
+        <span class="p">(</span>
+          <span class="p">[</span><span class="nx">thumbnail</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">array</span>
+          <span class="p">(</span>
+            <span class="p">[</span><span class="nb">file</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'cube-150x150.jpg'</span>
+            <span class="p">[</span><span class="nx">width</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">150</span>
+            <span class="p">[</span><span class="nx">height</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">150</span>
+            <span class="p">[</span><span class="nx">mime</span><span class="o">-</span><span class="nx">type</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'image/jpeg'</span>
+          <span class="p">)</span>
+
+          <span class="p">[</span><span class="nx">medium</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">array</span>
+          <span class="p">(</span>
+            <span class="p">[</span><span class="nb">file</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'cube-300x225.jpg'</span>
+            <span class="p">[</span><span class="nx">width</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">300</span>
+            <span class="p">[</span><span class="nx">height</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">225</span>
+            <span class="p">[</span><span class="nx">mime</span><span class="o">-</span><span class="nx">type</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'image/jpeg'</span>
+          <span class="p">)</span>
+
+      <span class="p">)</span>
+
+      <span class="p">[</span><span class="nx">image_meta</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">array</span>
+        <span class="p">(</span>
+          <span class="p">[</span><span class="nx">aperture</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+          <span class="p">[</span><span class="nx">credit</span><span class="p">]</span> <span class="o">=&gt;</span>
+          <span class="p">[</span><span class="nx">camera</span><span class="p">]</span> <span class="o">=&gt;</span>
+          <span class="p">[</span><span class="nx">caption</span><span class="p">]</span> <span class="o">=&gt;</span>
+          <span class="p">[</span><span class="nx">created_timestamp</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+          <span class="p">[</span><span class="nx">copyright</span><span class="p">]</span> <span class="o">=&gt;</span>
+          <span class="p">[</span><span class="nx">focal_length</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+          <span class="p">[</span><span class="nx">iso</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+          <span class="p">[</span><span class="nx">shutter_speed</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+          <span class="p">[</span><span class="nx">title</span><span class="p">]</span> <span class="o">=&gt;</span>
+          <span class="p">[</span><span class="nx">orientation</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">1</span>
+        <span class="p">)</span>
+      <span class="p">[</span><span class="nx">alt</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'Alt text'</span>
+      <span class="p">[</span><span class="nx">caption</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'Caption text'</span>
+      <span class="p">[</span><span class="nx">description</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'Description text'</span>
+      <span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">6</span>
+      <span class="p">[</span><span class="nx">is_image</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="kc">true</span>
+      <span class="p">[</span><span class="nx">title</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'Title text'</span>
+      <span class="p">[</span><span class="nx">url</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'http://site.com/wp-content/uploads/2014/09/cube.jpg'</span>
+<span class="p">)</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>With this property you can add a image from the WordPress media library.</p>
+
+<p><img alt="Image example" src="images/docs/property-image.png" /></p>
+
+<h3 id="settings">Settings</h3>
+
+<p>No settings exists.</p>
+
+<h2 id="link">Link</h2>
+
+<p><strong>type</strong> <code class="prettyprint">link</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of link.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Link'</span><span class="p">,</span>
+  <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'link'</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="nx">object</span><span class="p">(</span><span class="k">stdClass</span><span class="p">)</span><span class="c1">#4533 (3) {
+</span>  <span class="p">[</span><span class="s2">"post_id"</span><span class="p">]</span><span class="o">=&gt;</span>
+  <span class="nx">int</span> <span class="mi">0</span>
+  <span class="p">[</span><span class="s2">"url"</span><span class="p">]</span><span class="o">=&gt;</span>
+  <span class="nx">string</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span> <span class="s2">"http://wordpress.org"</span>
+  <span class="p">[</span><span class="s2">"title"</span><span class="p">]</span><span class="o">=&gt;</span>
+  <span class="nx">string</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="s2">"DN"</span>
+  <span class="p">[</span><span class="s2">"target"</span><span class="p">]</span><span class="o">=&gt;</span>
+  <span class="nx">string</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="s2">""</span>
+<span class="p">}</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>Create a link using the editors link modal window.</p>
+
+<p><strong>Since 2.4.0</strong> it will add <code class="prettyprint">post_id</code> if it&rsquo;s a internal link to output object.</p>
+
+<h3 id="settings">Settings</h3>
+
+<p>No settings exists.</p>
+
+<h2 id="number">Number</h2>
+
+<p><strong>type</strong> <code class="prettyprint">number</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of number.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Number'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'my_number_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'number'</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="nx">int</span> <span class="mi">10</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>The number property is the HTML5 number input field. No custom validation exists only the browsers validation will kick in. The value is saved as a string and the output is a string.</p>
+
+<h3 id="settings">Settings</h3>
+
+<p>No settings exists.</p>
+
+<h2 id="post">Post</h2>
+
+<p><strong>type</strong> <code class="prettyprint">post</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of post.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'Post'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'my_post_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'post'</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="nx">WP_Post</span> <span class="nx">Object</span>
+<span class="p">(</span>
+  <span class="p">[</span><span class="nx">ID</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">203</span>
+  <span class="p">[</span><span class="nx">post_author</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">1</span>
+  <span class="p">[</span><span class="nx">post_date</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">2014</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">18</span> <span class="mi">22</span><span class="o">:</span><span class="mo">07</span><span class="o">:</span><span class="mi">38</span>
+  <span class="p">[</span><span class="nx">post_date_gmt</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">2014</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">18</span> <span class="mi">22</span><span class="o">:</span><span class="mo">07</span><span class="o">:</span><span class="mi">38</span>
+  <span class="p">[</span><span class="nx">post_content</span><span class="p">]</span> <span class="o">=&gt;</span>
+  <span class="p">[</span><span class="nx">post_title</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'The post title'</span>
+  <span class="p">[</span><span class="nx">post_excerpt</span><span class="p">]</span> <span class="o">=&gt;</span>
+  <span class="p">[</span><span class="nx">post_status</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">publish</span>
+  <span class="p">[</span><span class="nx">comment_status</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">closed</span>
+  <span class="p">[</span><span class="nx">ping_status</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">closed</span>
+  <span class="p">[</span><span class="nx">post_password</span><span class="p">]</span> <span class="o">=&gt;</span>
+  <span class="p">[</span><span class="nx">post_name</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'the_post_title'</span>
+  <span class="p">[</span><span class="nx">to_ping</span><span class="p">]</span> <span class="o">=&gt;</span>
+  <span class="p">[</span><span class="nx">pinged</span><span class="p">]</span> <span class="o">=&gt;</span>
+  <span class="p">[</span><span class="nx">post_modified</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">2014</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">18</span> <span class="mi">22</span><span class="o">:</span><span class="mi">09</span><span class="o">:</span><span class="mo">05</span>
+  <span class="p">[</span><span class="nx">post_modified_gmt</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">2014</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">18</span> <span class="mi">22</span><span class="o">:</span><span class="mi">09</span><span class="o">:</span><span class="mo">05</span>
+  <span class="p">[</span><span class="nx">post_content_filtered</span><span class="p">]</span> <span class="o">=&gt;</span>
+  <span class="p">[</span><span class="nx">post_parent</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+  <span class="p">[</span><span class="nx">guid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'http://site.com/?page_id=203'</span>
+  <span class="p">[</span><span class="nx">menu_order</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+  <span class="p">[</span><span class="nx">post_type</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'page'</span>
+  <span class="p">[</span><span class="nx">post_mime_type</span><span class="p">]</span> <span class="o">=&gt;</span>
+  <span class="p">[</span><span class="nx">comment_count</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+  <span class="p">[</span><span class="nx">filter</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'raw'</span>
+<span class="p">)</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>With this property you can add reference to another post. It can&rsquo;t handle multiple references like <a href="#relationship">relationship</a></p>
+
+<h3 id="settings">Settings</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>placeholder</td>
+<td>empty string</td>
+<td>Placeholder text that&rsquo;s displayed when no option is slected.</td>
+</tr>
+<tr>
+<td>post_type</td>
+<td>&#39;post&rsquo;</td>
+<td>The post type that the property will load posts from. Can only be one post type</td>
+</tr>
+<tr>
+<td>query</td>
+<td>array</td>
+<td>Append a <code class="prettyprint">WP_Query</code> on all post types. Gist reference over <code class="prettyprint">WP_Query</code>. Note that <code class="prettyprint">post_type</code> in query will always be removed</td>
+</tr>
+<tr>
+<td>select2</td>
+<td>true</td>
+<td>If true Select2 will be used, if false the native browser dropdown will be used. (since 2.2.0)</td>
+</tr>
+</tbody></table>
+
+<h2 id="radio-buttons">Radio buttons</h2>
+
+<p><strong>type</strong> <code class="prettyprint">radio</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of radio buttons.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'Colors'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'my_radio_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'radio'</span><span class="p">,</span>
+  <span class="s1">'settings'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+      <span class="s1">'items'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">'White'</span> <span class="o">=&gt;</span> <span class="s1">'#ffffff'</span><span class="p">,</span>
+        <span class="s1">'Black'</span> <span class="o">=&gt;</span> <span class="s1">'#000000'</span>
+      <span class="p">]</span>
+  <span class="p">]</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="nx">string</span> <span class="s1">'#ffffff'</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>With this property you can create a list of radio buttons. The key is the value that the user will se in the WordPress admin and the value is the value saved in the database.</p>
+
+<h3 id="settings">Settings</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>items</td>
+<td>array</td>
+<td>Array with radio buttons, value or key/value</td>
+</tr>
+<tr>
+<td>selected</td>
+<td>empty string</td>
+<td>The radio button that will be selected from start. The value should match a key of your items</td>
+</tr>
+</tbody></table>
+
+<h2 id="reference">Reference</h2>
+
+<p><strong>type</strong> <code class="prettyprint">reference</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of reference.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'References'</span><span class="p">,</span>
+  <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'reference'</span><span class="p">,</span>
+  <span class="s1">'settings'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+    <span class="s1">'slug'</span>      <span class="o">=&gt;</span> <span class="s1">'top_module'</span><span class="p">,</span>
+    <span class="s1">'page_type'</span> <span class="o">=&gt;</span> <span class="s1">'start-page-type'</span>
+  <span class="p">]</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ * The reference property does not save any values.
+ */</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>When using Post or Relationship property to load modules or something like that.
+You may what to check which pages are loading the module. This is where the reference property comes in hand,
+it will show which pages that has a reference to the module.</p>
+
+<p><img alt="Reference example" src="images/docs/property-reference.png" /></p>
+
+<h3 id="settings">Settings</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>slug</td>
+<td>array</td>
+<td>String or array of slugs to look for references</td>
+</tr>
+<tr>
+<td>page_type</td>
+<td>empty string</td>
+<td>String or array of page types (the file name of the page type) to check</td>
+</tr>
+</tbody></table>
+
+<h2 id="relationship">Relationship</h2>
+
+<p><strong>type</strong> <code class="prettyprint">relationship</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of relationship.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'Relationship'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'my_relationship_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'relationship'</span><span class="p">,</span>
+  <span class="s1">'settings'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+    <span class="s1">'limit'</span>     <span class="o">=&gt;</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="s1">'post_type'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'post'</span><span class="p">,</span> <span class="s1">'page'</span><span class="p">,</span> <span class="s1">'my-custom-post-type'</span><span class="p">]</span>
+  <span class="p">]</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="k">array</span>
+<span class="p">(</span>
+  <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">WP_Post</span> <span class="nx">Object</span>
+  <span class="p">(</span>
+    <span class="p">[</span><span class="nx">ID</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">203</span>
+    <span class="p">[</span><span class="nx">post_author</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">1</span>
+    <span class="p">[</span><span class="nx">post_date</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">2014</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">18</span> <span class="mi">22</span><span class="o">:</span><span class="mo">07</span><span class="o">:</span><span class="mi">38</span>
+    <span class="p">[</span><span class="nx">post_date_gmt</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">2014</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">18</span> <span class="mi">22</span><span class="o">:</span><span class="mo">07</span><span class="o">:</span><span class="mi">38</span>
+    <span class="p">[</span><span class="nx">post_content</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">post_title</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'The post title'</span>
+    <span class="p">[</span><span class="nx">post_excerpt</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">post_status</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'publish'</span>
+    <span class="p">[</span><span class="nx">comment_status</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'closed'</span>
+    <span class="p">[</span><span class="nx">ping_status</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'closed'</span>
+    <span class="p">[</span><span class="nx">post_password</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">post_name</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'the_post_title'</span>
+    <span class="p">[</span><span class="nx">to_ping</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">pinged</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">post_modified</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">2014</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">18</span> <span class="mi">22</span><span class="o">:</span><span class="mi">09</span><span class="o">:</span><span class="mo">05</span>
+    <span class="p">[</span><span class="nx">post_modified_gmt</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">2014</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">18</span> <span class="mi">22</span><span class="o">:</span><span class="mi">09</span><span class="o">:</span><span class="mo">05</span>
+    <span class="p">[</span><span class="nx">post_content_filtered</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">post_parent</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+    <span class="p">[</span><span class="nx">guid</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'http://site.com/?page_id=203'</span>
+    <span class="p">[</span><span class="nx">menu_order</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+    <span class="p">[</span><span class="nx">post_type</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'page'</span>
+    <span class="p">[</span><span class="nx">post_mime_type</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="p">[</span><span class="nx">comment_count</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+    <span class="p">[</span><span class="nx">filter</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'raw'</span>
+  <span class="p">)</span>
+<span class="p">)</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>With this property you can link posts, pages or custom post types together. With the <code class="prettyprint">post_type</code> setting you can diced witch post types to use, default is page.</p>
+
+<p><img alt="Relationship example" src="images/docs/property-relationship.png" /></p>
+
+<h3 id="settings">Settings</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>items</td>
+<td> array</td>
+<td> Array of items that should be listed in the relationship. You can use this to have your own data in the relationship property. Each item in the array is required to have <code class="prettyprint">id</code> and <code class="prettyprint">title</code> values. All sort options that begins with <code class="prettyprint">Post</code> will be hidden. <strong>Since 2.4.0</strong></td>
+</tr>
+<tr>
+<td>limit</td>
+<td>-1 (no limit)</td>
+<td>Prevent how many post references that can be added.</td>
+</tr>
+<tr>
+<td>only_once</td>
+<td>false</td>
+<td>When this is true you can only select a relationship once. <strong>Since 2.4.0</strong></td>
+</tr>
+<tr>
+<td>post_type</td>
+<td>&#39;page&rsquo;</td>
+<td>Change which post types it loads post objects from</td>
+</tr>
+<tr>
+<td>query</td>
+<td>array</td>
+<td>Append a <code class="prettyprint">WP_Query</code> on all post types. Gist reference over <code class="prettyprint">WP_Query</code>. Note that <code class="prettyprint">post_type</code> in query will always be removed</td>
+</tr>
+<tr>
+<td>show_sort_by</td>
+<td>true</td>
+<td>Show the sort by dropdown or not.</td>
+</tr>
+</tbody></table>
+
+<h3 id="items-data">Items data</h3>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of custom data in relationship.
+ */</span>
+
+<span class="nv">$categories</span> <span class="o">=</span> <span class="nb">array_map</span><span class="p">(</span> <span class="k">function</span> <span class="p">(</span> <span class="nv">$cat</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">[</span>
+    <span class="s1">'id'</span>    <span class="o">=&gt;</span> <span class="p">(</span><span class="nx">int</span><span class="p">)</span> <span class="nv">$cat</span><span class="o">-&gt;</span><span class="na">term_id</span><span class="p">,</span>
+    <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="nv">$cat</span><span class="o">-&gt;</span><span class="na">name</span>
+  <span class="p">];</span>
+<span class="p">},</span> <span class="nx">get_categories</span><span class="p">()</span> <span class="p">);</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'Categories'</span>
+  <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'relationship'</span><span class="p">,</span>
+  <span class="s1">'settings'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+    <span class="s1">'items'</span> <span class="o">=&gt;</span> <span class="nv">$categories</span>
+  <span class="p">]</span>
+<span class="p">]</span> <span class="p">)</span>
+</code></pre>
+
+<h3 id="filters">Filters</h3>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/property/relationship/sort_options` filter.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/property/relationship/sort_options'</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span> <span class="nv">$not_allowed</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nb">array_merge</span><span class="p">(</span> <span class="nv">$not_allowed</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">'Name (alphabetically)'</span> <span class="o">=&gt;</span> <span class="k">function</span> <span class="p">(</span> <span class="nv">$a</span><span class="p">,</span> <span class="nv">$b</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// Backwards compatibility with both `post_title` and `title`.
+</span>            <span class="k">return</span> <span class="nb">strcmp</span><span class="p">(</span>
+                <span class="nb">strtolower</span><span class="p">(</span> <span class="nb">isset</span><span class="p">(</span> <span class="nv">$a</span><span class="o">-&gt;</span><span class="na">post_title</span> <span class="p">)</span> <span class="o">?</span> <span class="nv">$a</span><span class="o">-&gt;</span><span class="na">post_title</span> <span class="o">:</span> <span class="nv">$a</span><span class="o">-&gt;</span><span class="na">title</span> <span class="p">),</span>
+                <span class="nb">strtolower</span><span class="p">(</span> <span class="nb">isset</span><span class="p">(</span> <span class="nv">$b</span><span class="o">-&gt;</span><span class="na">post_title</span> <span class="p">)</span> <span class="o">?</span> <span class="nv">$b</span><span class="o">-&gt;</span><span class="na">post_title</span> <span class="o">:</span> <span class="nv">$b</span><span class="o">-&gt;</span><span class="na">title</span> <span class="p">)</span>
+            <span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">]</span> <span class="p">);</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Filter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>papi/property/relationship/sort_options</td>
+<td>Add more sort options to property relationship. The array key is the name and the value that is saved as the sort order identification</td>
+</tr>
+</tbody></table>
+
+<h2 id="repeater">Repeater</h2>
+
+<p><strong>type</strong> <code class="prettyprint">repeater</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of repeater.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'Repeater'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'my_repeater_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'repeater'</span><span class="p">,</span>
+  <span class="s1">'settings'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+    <span class="s1">'items'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+      <span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+        <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'string'</span><span class="p">,</span>
+        <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Title'</span><span class="p">,</span>
+        <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'my_string_slug'</span>
+      <span class="p">]</span> <span class="p">),</span>
+      <span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+        <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'dropdown'</span><span class="p">,</span>
+        <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'Color'</span><span class="p">,</span>
+        <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'my_dropdown_slug'</span><span class="p">,</span>
+        <span class="s1">'settings'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+          <span class="s1">'items'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">'White'</span> <span class="o">=&gt;</span> <span class="s1">'#ffffff'</span><span class="p">,</span>
+            <span class="s1">'Black'</span> <span class="o">=&gt;</span> <span class="s1">'#000000'</span>
+          <span class="p">]</span>
+        <span class="p">]</span>
+      <span class="p">]</span> <span class="p">)</span>
+    <span class="p">]</span>
+  <span class="p">]</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="k">array</span>
+<span class="p">(</span>
+  <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">array</span>
+  <span class="p">(</span>
+    <span class="p">[</span><span class="nx">my_string_slug</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'Test 1'</span>
+    <span class="p">[</span><span class="nx">my_dropdown_slug</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'#ffffff'</span>
+  <span class="p">)</span>
+
+  <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">array</span>
+  <span class="p">(</span>
+    <span class="p">[</span><span class="nx">my_string_slug</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'Test 2'</span>
+    <span class="p">[</span><span class="nx">my_dropdown_slug</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s1">'#000000'</span>
+  <span class="p">)</span>
+<span class="p">)</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>The repeater property can create a repeater of sub fields which can be repeated again and again. You can&rsquo;t have a flexible or repeater in a repeater.</p>
+
+<p><img alt="Repeater example" src="images/docs/property-repeater.png" /></p>
+
+<h3 id="settings">Settings</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>add_new_label</td>
+<td>&#39;Add new row&rsquo;</td>
+<td> Add new label text. <strong>Since 2.4.2</strong></td>
+</tr>
+<tr>
+<td>closed_rows </td>
+<td>false</td>
+<td> When this is true the existing rows will be closed when the page is loaded.</td>
+</tr>
+<tr>
+<td>items</td>
+<td>array</td>
+<td>The array of properties, the same key/values as <code class="prettyprint">$this-&gt;property</code> method or <code class="prettyprint">papi_property</code> function has. You can&rsquo;t use repeater or flexible inside a repeater.</td>
+</tr>
+<tr>
+<td>layout</td>
+<td>&#39;table&rsquo;</td>
+<td> Choose between <code class="prettyprint">table</code> or <code class="prettyprint">row</code>.</td>
+</tr>
+<tr>
+<td>limit</td>
+<td>-1 (no limit)</td>
+<td>Prevent how many post references that can be added.</td>
+</tr>
+</tbody></table>
+
+<h3 id="filters">Filters</h3>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/property/repeater/exclude` filter.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/property/repeater/exclude'</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span> <span class="nv">$exclude</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nb">array_merge</span><span class="p">(</span> <span class="nv">$exclude</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">'string'</span>
+  <span class="p">]</span> <span class="p">);</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Filter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>papi/property/repeater/exclude</td>
+<td>Prevent properties from render and working in repeater</td>
+</tr>
+</tbody></table>
+
+<h2 id="string">String</h2>
+
+<p><strong>type</strong> <code class="prettyprint">string</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of string.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Name'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'my_name_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'string'</span>
+  <span class="s1">'settings'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+    <span class="s1">'allow_html'</span> <span class="o">=&gt;</span> <span class="kc">true</span>
+  <span class="p">]</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="nx">string</span> <span class="s1">'Fredrik'</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>The string property is just a text input field. The value is saved as a string and the output is a string.</p>
+
+<h3 id="settings">Settings</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>allow_html</td>
+<td>false</td>
+<td>Allow HTML in text input field</td>
+</tr>
+</tbody></table>
+
+<h2 id="term">Term</h2>
+
+<p><strong>type</strong> <code class="prettyprint">object</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of term.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'Term'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'my_term_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'term'</span><span class="p">,</span>
+  <span class="s1">'settings  =&gt; [
+    '</span><span class="nx">taxonomy</span><span class="s1">' =&gt; '</span><span class="nx">my_taxonomy</span><span class="s1">'
+  ]
+] )
+
+/**
+ * Example output.
+ */
+
+stdClass Object
+(
+    [term_id] =&gt; '</span><span class="mi">123</span><span class="s1">'
+    [name] =&gt; '</span><span class="nx">The</span> <span class="nx">term</span><span class="s1">'
+    [slug] =&gt; '</span><span class="nx">the_term</span><span class="s1">'
+    [term_group] =&gt; '</span><span class="mi">0</span><span class="s1">'
+    [term_order] =&gt; '</span><span class="mi">0</span><span class="s1">'
+    [term_taxonomy_id] =&gt; '</span><span class="mi">321</span><span class="s1">'
+    [taxonomy] =&gt; '</span><span class="nx">my_taxonomy</span><span class="s1">'
+    [description] =&gt; ''
+    [parent] =&gt; '</span><span class="mi">0</span><span class="s1">'
+    [count] =&gt; '</span><span class="mi">0</span><span class="s1">'
+    [object_id] =&gt; '</span><span class="err">'</span>
+<span class="p">)</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>With this property you can add reference to a term in a taxonomy. It can&rsquo;t handle multiple terms or taxonomies.</p>
+
+<h3 id="settings">Settings</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>placeholder</td>
+<td>null</td>
+<td>Placeholder text that&rsquo;s displayed when no option is slected.</td>
+</tr>
+<tr>
+<td>taxonomy</td>
+<td>&#39;post&rsquo;</td>
+<td>The taxonomy that the property will load terms from. Can only be one taxonomy.</td>
+</tr>
+<tr>
+<td>select2</td>
+<td>true</td>
+<td>If true Select2 will be used, if false the native browser dropdown will be used.</td>
+</tr>
+<tr>
+<td>query</td>
+<td>array</td>
+<td> Add <code class="prettyprint">get_terms</code> arguments.</td>
+</tr>
+</tbody></table>
+
+<h2 id="text">Text</h2>
+
+<p><strong>type</strong> <code class="prettyprint">text</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of text.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Text'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'my_text_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'text'</span><span class="p">,</span>
+  <span class="s1">'settings'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+    <span class="s1">'allow_html'</span> <span class="o">=&gt;</span> <span class="kc">true</span>
+  <span class="p">]</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="nx">string</span> <span class="s1">'Fredrik'</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This property will output the textarea tag and the output will be a string with all text from the textarea.</p>
+
+<h3 id="settings">Settings</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>allow_html</td>
+<td>false</td>
+<td>Allow HTML in textarea</td>
+</tr>
+</tbody></table>
+
+<h2 id="url">Url</h2>
+
+<p><strong>type</strong> <code class="prettyprint">url</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of url.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'Url with button'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'my_url_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'url'</span><span class="p">,</span>
+  <span class="s1">'settings'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+    <span class="s1">'mediauploader'</span> <span class="o">=&gt;</span> <span class="kc">true</span>
+  <span class="p">]</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="nx">string</span> <span class="s1">'http://site.com/wp-content/uploads/2014/11/image.png'</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This property will output the textarea tag and the output will be a string with all text from the textarea.</p>
+
+<p><img alt="Url example" src="images/docs/property-url.png" /></p>
+
+<h3 id="settings">Settings</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>mediauploader</td>
+<td>false</td>
+<td>When this is <code class="prettyprint">true</code> a button will show next to the input field where you can open the WordPress media library</td>
+</tr>
+</tbody></table>
+
+<h2 id="user">User</h2>
+
+<p><strong>type</strong> <code class="prettyprint">user</code>
+<strong>since</strong> <code class="prettyprint">2.2.0</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of user.
+ */</span>
+
+<span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+  <span class="s1">'title'</span>    <span class="o">=&gt;</span> <span class="s1">'User'</span><span class="p">,</span>
+  <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'my_user_slug'</span><span class="p">,</span>
+  <span class="s1">'type'</span>     <span class="o">=&gt;</span> <span class="s1">'user'</span>
+<span class="p">]</span> <span class="p">)</span>
+
+<span class="sd">/**
+ * Example output.
+ */</span>
+
+<span class="nx">object</span><span class="p">(</span> <span class="nx">WP_User</span> <span class="p">)</span><span class="c1">//327 (7) {
+</span>  <span class="p">[</span><span class="s2">"data"</span><span class="p">]</span><span class="o">=&gt;</span>
+  <span class="nx">object</span><span class="p">(</span> <span class="k">stdClass</span> <span class="p">)</span><span class="c1">//323 (10) {
+</span>    <span class="p">[</span><span class="s2">"ID"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span> <span class="mi">1</span> <span class="p">)</span> <span class="s2">"1"</span>
+    <span class="p">[</span><span class="s2">"user_login"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span> <span class="mi">5</span> <span class="p">)</span> <span class="s2">"admin"</span>
+    <span class="p">[</span><span class="s2">"user_pass"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span> <span class="mi">34</span> <span class="p">)</span> <span class="s2">""</span>
+    <span class="p">[</span><span class="s2">"user_nicename"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span> <span class="mi">5</span> <span class="p">)</span> <span class="s2">"admin"</span>
+    <span class="p">[</span><span class="s2">"user_email"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span> <span class="mi">24</span> <span class="p">)</span> <span class="s2">"admin@wordpress.local"</span>
+    <span class="p">[</span><span class="s2">"user_url"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span> <span class="s2">""</span>
+    <span class="p">[</span><span class="s2">"user_registered"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span> <span class="mi">19</span> <span class="p">)</span> <span class="s2">"2015-04-19 12:27:23"</span>
+    <span class="p">[</span><span class="s2">"user_activation_key"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span> <span class="s2">""</span>
+    <span class="p">[</span><span class="s2">"user_status"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span> <span class="mi">1</span> <span class="p">)</span> <span class="s2">"0"</span>
+    <span class="p">[</span><span class="s2">"display_name"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span> <span class="mi">14</span> <span class="p">)</span> <span class="s2">"Admin Test"</span>
+  <span class="p">}</span>
+  <span class="p">[</span><span class="s2">"ID"</span><span class="p">]</span><span class="o">=&gt;</span>
+  <span class="nx">int</span><span class="p">(</span> <span class="mi">1</span> <span class="p">)</span>
+  <span class="p">[</span><span class="s2">"caps"</span><span class="p">]</span><span class="o">=&gt;</span>
+  <span class="k">array</span><span class="p">(</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="p">[</span><span class="s2">"administrator"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">bool</span><span class="p">(</span> <span class="kc">true</span> <span class="p">)</span>
+  <span class="p">}</span>
+  <span class="p">[</span><span class="s2">"cap_key"</span><span class="p">]</span><span class="o">=&gt;</span>
+  <span class="nx">string</span><span class="p">(</span> <span class="mi">15</span> <span class="p">)</span> <span class="s2">"wp_capabilities"</span>
+  <span class="p">[</span><span class="s2">"roles"</span><span class="p">]</span><span class="o">=&gt;</span>
+  <span class="k">array</span><span class="p">(</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span> <span class="mi">13</span> <span class="p">)</span> <span class="s2">"administrator"</span>
+  <span class="p">}</span>
+  <span class="p">[</span><span class="s2">"allcaps"</span><span class="p">]</span><span class="o">=&gt;</span>
+  <span class="k">array</span><span class="p">(</span> <span class="mi">64</span> <span class="p">)</span> <span class="p">{}</span>
+  <span class="p">[</span><span class="s2">"filter"</span><span class="p">]</span><span class="o">=&gt;</span>
+  <span class="k">NULL</span>
+<span class="p">}</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>With this property you can add reference to a user.</p>
+
+<h3 id="settings">Settings</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>select2</td>
+<td>true</td>
+<td>If true Select2 will be used, if false the native browser dropdown will be used. (since 2.2.0)</td>
+</tr>
+</tbody></table>
+
+          <h1 id="property-filters">Property filters</h1>
+
+<h2 id="format-value">Format Value</h2>
+
+<p><strong>filter</strong> <code class="prettyprint">papi/format_value/{$property_type}</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/format_value/{$property_type}` filter.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/format_value/string'</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span> <span class="nv">$value</span><span class="p">,</span> <span class="nv">$slug</span><span class="p">,</span> <span class="nv">$post_id</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// do some magic with the value and return it.
+</span>  <span class="k">return</span> <span class="nv">$value</span><span class="p">;</span>
+<span class="p">},</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>Format the value of the property before it&rsquo;s returned to the theme.</p>
+
+<h2 id="load-value">Load Value</h2>
+
+<p><strong>filter</strong> <code class="prettyprint">papi/load_value/{$property_type}</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/load_value/{$property_type}` filter.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/load_value/string'</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span> <span class="nv">$value</span><span class="p">,</span> <span class="nv">$slug</span><span class="p">,</span> <span class="nv">$post_id</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// do some magic with the value and return it.
+</span>  <span class="k">return</span> <span class="nv">$value</span><span class="p">;</span>
+<span class="p">},</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This filter is applied after the value is loaded in the database.</p>
+
+<h2 id="update-value">Update Value</h2>
+
+<p><strong>filter</strong> <code class="prettyprint">papi/update_value/{$property_type}</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/update_value/{$property_type}` filter.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/update_value/string'</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span> <span class="nv">$value</span><span class="p">,</span> <span class="nv">$slug</span><span class="p">,</span> <span class="nv">$post_id</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// do some magic with the value and return it.
+</span>  <span class="k">return</span> <span class="nv">$value</span><span class="p">;</span>
+<span class="p">},</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This filter is applied before the value is saved in the database.</p>
+
+          <h1 id="conditional-logic">Conditional logic</h1>
+
+<p><strong>Since 2.2.0</strong> Papi has conditional logic for properties. So you can show or hide a field depending on the value of other fields.</p>
+
+<p><strong>Since 2.4.0</strong> When a property has <code class="prettyprint">display =&gt; false</code> conditional logic will not have any impact on the property.</p>
+
+<p>The example on the right will hide <code class="prettyprint">Link</code> field since <code class="prettyprint">Show</code> field is <code class="prettyprint">false</code> when you load the page. When you click the <code class="prettyprint">Show</code> it will do ajax call and check if <code class="prettyprint">Link</code> field should be showed or not depending on the value of <code class="prettyprint">Show</code>.</p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">box</span><span class="p">(</span> <span class="s1">'Content'</span><span class="p">,</span> <span class="p">[</span>
+  <span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+    <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'bool'</span><span class="p">,</span>
+    <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Show'</span><span class="p">,</span>
+    <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'show'</span>
+  <span class="p">]</span> <span class="p">),</span>
+  <span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+    <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'string'</span><span class="p">,</span>
+    <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Link'</span><span class="p">,</span>
+    <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'link'</span><span class="p">,</span>
+    <span class="s1">'rules'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+      <span class="p">[</span>
+        <span class="s1">'operator'</span> <span class="o">=&gt;</span> <span class="s1">'='</span><span class="p">,</span>
+        <span class="s1">'value'</span>    <span class="o">=&gt;</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'show'</span>
+      <span class="p">]</span>
+    <span class="p">]</span>
+  <span class="p">]</span> <span class="p">)</span>
+<span class="p">]</span> <span class="p">);</span>
+</code></pre>
+
+<h2 id="relation">Relation</h2>
+
+<p>Like in <code class="prettyprint">WP Query</code> you can have <code class="prettyprint">relation</code> between rules. It can be <code class="prettyprint">OR</code> or <code class="prettyprint">AND</code>. The default value is <code class="prettyprint">OR</code>. In the example on the right the <code class="prettyprint">relation</code> has <code class="prettyprint">AND</code> value. The <code class="prettyprint">relation</code> key should exist on the top level array.</p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">box</span><span class="p">(</span> <span class="s1">'Content'</span><span class="p">,</span> <span class="p">[</span>
+  <span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+    <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'bool'</span><span class="p">,</span>
+    <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Show'</span><span class="p">,</span>
+    <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'show'</span>
+  <span class="p">]</span> <span class="p">),</span>
+  <span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+    <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'bool'</span><span class="p">,</span>
+    <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Hide'</span><span class="p">,</span>
+    <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'hide'</span>
+  <span class="p">]</span> <span class="p">),</span>
+  <span class="nx">papi_property</span><span class="p">(</span> <span class="p">[</span>
+    <span class="s1">'type'</span>  <span class="o">=&gt;</span> <span class="s1">'string'</span><span class="p">,</span>
+    <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Link'</span><span class="p">,</span>
+    <span class="s1">'slug'</span>  <span class="o">=&gt;</span> <span class="s1">'link'</span><span class="p">,</span>
+    <span class="s1">'rules'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+      <span class="s1">'relation'</span> <span class="o">=&gt;</span> <span class="s1">'AND'</span><span class="p">,</span>
+      <span class="p">[</span>
+        <span class="s1">'operator'</span> <span class="o">=&gt;</span> <span class="s1">'='</span><span class="p">,</span>
+        <span class="s1">'value'</span>    <span class="o">=&gt;</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'show'</span>
+      <span class="p">],</span>
+      <span class="p">[</span>
+        <span class="s1">'operator'</span> <span class="o">=&gt;</span> <span class="s1">'='</span><span class="p">,</span>
+        <span class="s1">'value'</span>    <span class="o">=&gt;</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="s1">'slug'</span>     <span class="o">=&gt;</span> <span class="s1">'hide'</span>  
+      <span class="p">]</span>
+    <span class="p">]</span>
+  <span class="p">]</span> <span class="p">)</span>
+<span class="p">]</span> <span class="p">);</span>
+</code></pre>
+
+<h2 id="rule">Rule</h2>
+
+<p>A single rule has four different keys. The rule should be a array in the top level <code class="prettyprint">rules</code> array.</p>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>operator</td>
+<td><code class="prettyprint">=</code></td>
+<td>The operator to use. Possible values are <code class="prettyprint">=</code>, <code class="prettyprint">!=</code>, <code class="prettyprint">&gt;</code>, <code class="prettyprint">&gt;=</code>, <code class="prettyprint">&lt;</code>, <code class="prettyprint">&lt;=</code>, <code class="prettyprint">LIKE</code>, <code class="prettyprint">NOT LIKE</code>, <code class="prettyprint">IN</code>, <code class="prettyprint">NOT IN</code>, <code class="prettyprint">BETWEEN</code>, <code class="prettyprint">NOT BETWEEN</code>, <code class="prettyprint">EXISTS</code>, <code class="prettyprint">NOT EXISTS</code>, <code class="prettyprint">EMPTY</code> and <code class="prettyprint">NOT EMPTY</code></td>
+</tr>
+<tr>
+<td>slug</td>
+<td>empty string</td>
+<td>The slug of the property to read from.</td>
+</tr>
+<tr>
+<td>source</td>
+<td>null</td>
+<td>The source to compare the value with instead of fetching it from field or database. Possible values are callable function (no closure), mixed values.</td>
+</tr>
+<tr>
+<td>value</td>
+<td>null</td>
+<td>The value to compare to.</td>
+</tr>
+</tbody></table>
+
+<h2 id="operators">Operators</h2>
+
+<table><thead>
+<tr>
+<th>Operator</th>
+<th>Example value</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code class="prettyprint">=</code></td>
+<td>true</td>
+<td> Equal value</td>
+</tr>
+<tr>
+<td><code class="prettyprint">!=</code></td>
+<td>false</td>
+<td>Not equal value</td>
+</tr>
+<tr>
+<td><code class="prettyprint">&gt;</code></td>
+<td> 12</td>
+<td>Greater then a number</td>
+</tr>
+<tr>
+<td><code class="prettyprint">&gt;=</code></td>
+<td> 13</td>
+<td>Greater then or equal a number</td>
+</tr>
+<tr>
+<td><code class="prettyprint">&lt;</code></td>
+<td> 14</td>
+<td>Less then a number</td>
+</tr>
+<tr>
+<td><code class="prettyprint">&lt;=</code></td>
+<td>15</td>
+<td>Less then or equal a number</td>
+</tr>
+<tr>
+<td><code class="prettyprint">LIKE</code></td>
+<td><code class="prettyprint">hello</code></td>
+<td>Check if a string contains the value</td>
+</tr>
+<tr>
+<td><code class="prettyprint">NOT LIKE</code></td>
+<td> <code class="prettyprint">hello</code></td>
+<td> Check if a string not contains the value</td>
+</tr>
+<tr>
+<td><code class="prettyprint">IN</code></td>
+<td> [1, 2]</td>
+<td> In array</td>
+</tr>
+<tr>
+<td><code class="prettyprint">NOT IN</code></td>
+<td>[3, 4]</td>
+<td>Not in array</td>
+</tr>
+<tr>
+<td><code class="prettyprint">BETWEEN</code></td>
+<td> [5, 6]</td>
+<td>Between two numbers</td>
+</tr>
+<tr>
+<td><code class="prettyprint">NOT BETWEEN</code></td>
+<td>[7, 8]</td>
+<td>Not between two numbers</td>
+</tr>
+<tr>
+<td><code class="prettyprint">EXISTS</code></td>
+<td></td>
+<td>Property value should not be null or empty array (Papi does not save empty arrays)</td>
+</tr>
+<tr>
+<td><code class="prettyprint">NOT EXISTS</code></td>
+<td></td>
+<td>Property value should be null or empty array (Papi does not save empty arrays)</td>
+</tr>
+<tr>
+<td><code class="prettyprint">EMPTY</code></td>
+<td></td>
+<td> Property value should be empty. &lsquo;0&rsquo;, 0 and false are not empty.</td>
+</tr>
+<tr>
+<td><code class="prettyprint">NOT EMPTY</code></td>
+<td></td>
+<td> Property value should not be empty. &#39;0&rsquo;, 0 and false are not empty.</td>
+</tr>
+</tbody></table>
+
+<h2 id="flexible-and-repeater">Flexible and Repeater</h2>
+
+<p>In a <code class="prettyprint">flexible</code> conditional logic will only work on the same row. The rule slug in <code class="prettyprint">flexible</code> or <code class="prettyprint">repeater</code> properties should be the same slug as the property and nothing more advanced like <code class="prettyprint">flexible</code> or <code class="prettyprint">repeater</code> slug and child property slug. So not <code class="prettyprint">my_repeater_slug.my_child_slug</code> or <code class="prettyprint">my_repeater_slug.0.my_child_slug</code> just <code class="prettyprint">my_child_slug</code>. Papi will find right property to use.</p>
+
+          <h1 id="setting-filters">Setting filters</h1>
+
+<h2 id="change-column-title-for-page-type-column.">Change column title for page type column.</h2>
+
+<p><strong>filter</strong> <code class="prettyprint">papi/settings/column_title_{$post_type}</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/settings/column_title_{$post_type}` filter.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/settings/column_title_module'</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span> <span class="nv">$page_type</span> <span class="p">)</span> <span class="p">{</span>
+ <span class="k">return</span> <span class="nx">__</span><span class="p">(</span> <span class="s1">'Module Type'</span><span class="p">,</span> <span class="s1">'my_theme'</span> <span class="p">);</span>
+<span class="p">}</span> <span class="p">);</span>
+
+</code></pre>
+
+<h2 id="change-default-sort-order">Change default sort order</h2>
+
+<p><strong>filter</strong> <code class="prettyprint">papi/settings/sort_order</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/settings/sort_order` filter.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/settings/sort_order'</span><span class="p">,</span> <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>Change the default sort order for page types, meta boxes, tabs and properties.</p>
+
+<p>Default sort order is <code class="prettyprint">1000</code></p>
+
+<h2 id="change-standard-page-description-for-post-type">Change standard page description for post type</h2>
+
+<p><strong>filter</strong> <code class="prettyprint">papi/settings/standard_page_description_{$post_type}</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/settings/standard_page_description_{$post_type}` filter.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/settings/standard_page_description_post'</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span> <span class="nv">$page_type</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">__</span><span class="p">(</span> <span class="s1">'The standard blog post'</span><span class="p">,</span> <span class="s1">'my_theme'</span> <span class="p">);</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This filter is used to change the standard page description for a post type.</p>
+
+<p>Default value is the translation of <code class="prettyprint">Page with WordPress standard fields</code>
+where <code class="prettyprint">Page</code> will be the singular name for the post type.</p>
+
+<h2 id="change-standard-page-name-for-post-type">Change standard page name for post type</h2>
+
+<p><strong>filter</strong> <code class="prettyprint">papi/settings/standard_page_name_{$post_type}</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/settings/standard_page_description_{$post_type}` filter.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/settings/standard_page_description_post'</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span> <span class="nv">$page_type</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">__</span><span class="p">(</span> <span class="s1">'Blog page'</span><span class="p">,</span> <span class="s1">'my_theme'</span> <span class="p">);</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This filter is used to change the standard page name for a post type.</p>
+
+<p>Default value is the translation of <code class="prettyprint">Standard Page</code>
+where <code class="prettyprint">Page</code> will be the singular name for the post type.</p>
+
+<h2 id="change-standard-page-thumbnail-for-post-type">Change standard page thumbnail for post type</h2>
+
+<p><strong>filter</strong> <code class="prettyprint">papi/settings/standard_page_thumbnail_{$post_type}</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/settings/standard_page_thumbnail_{$post_type}` filter.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/settings/standard_page_thumbnail_post'</span><span class="p">,</span> <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s1">'/path/to/thumbnail.png'</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This filter is used to change the standard page thumbnail for a post type.</p>
+
+<p>Default value is the translation of <code class="prettyprint">empty string</code></p>
+
+<h2 id="load-page-type-from-post-id-query-string">Load page type from post id query string</h2>
+
+<p><strong>filter</strong> <code class="prettyprint">papi/settings/page_type_from_post_qs</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/settings/page_type_from_post_qs` filter.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/settings/page_type_from_post_qs'</span><span class="p">,</span> <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s1">'parent_post'</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This filter is used to load a page type from a query string that have another post id.</p>
+
+<p>When using plugins as Polylang the query string <code class="prettyprint">from_post</code> is used to tell which post the current post was created from.</p>
+
+<p>Papi will not now which page type to load then and it should be the same as the <code class="prettyprint">from_post</code>. So that&rsquo;s when this filter will be useful.</p>
+
+<p>This filter is not post type specific and will work on every post type.</p>
+
+<p>Default value is <code class="prettyprint">from_post</code>.</p>
+
+<h2 id="only-page-type-for-post-type">Only page type for post type</h2>
+
+<p><strong>filter</strong> <code class="prettyprint">papi/settings/only_page_type_{$post_type}</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/settings/only_page_type_{$post_type}` filter.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/settings/only_page_type_post'</span><span class="p">,</span> <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s1">'post-page-type'</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This filter is used to register all page type directories that Papi should look for page types in.</p>
+
+<p>You can return a string or a array of strings.</p>
+
+<h2 id="page-type-directories">Page type directories</h2>
+
+<p><strong>filter</strong> <code class="prettyprint">papi/settings/directories</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/settings/directories` filter.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/settings/directories'</span><span class="p">,</span> <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This filter is used to register all page type directories that Papi should look for page types in.</p>
+
+<p>You can return a string or a array of strings.</p>
+
+<p>Default value is <code class="prettyprint">empty array</code>.</p>
+
+<h2 id="show-page-type-on-add-new-page-view">Show page type on add new page view</h2>
+
+<p><strong>filter</strong> <code class="prettyprint">papi/settings/show_page_type_{$post_type}</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/settings/show_page_type_{$post_type}` filter.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/settings/show_page_type_post'</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span> <span class="nv">$page_type</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span> <span class="nv">$page_type</span> <span class="o">===</span> <span class="s1">'start-page-type'</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This filter is used to filter which page types that will be displayed or not on <code class="prettyprint">Add New Page</code> page.</p>
+
+<p>The function will send in the file name of post types as a argument.</p>
+
+<p>Returning anything else then <code class="prettyprint">true</code> will hide the page type on <code class="prettyprint">Add New Page</code> page.</p>
+
+<p>Default value for every page type is <code class="prettyprint">true</code></p>
+
+<h2 id="show-standard-page-type-for-post-type">Show standard page type for post type</h2>
+
+<p><strong>filter</strong> <code class="prettyprint">papi/settings/show_standard_page_type_{$post_type}</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/settings/show_standard_page_type_{$post_type}` filter.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/settings/show_standard_page_type_page'</span><span class="p">,</span> <span class="s1">'__return_false'</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This filter allows you to show (<strong>since 2.4.0</strong> standard page is hidden by default) the standard page on the <code class="prettyprint">Add New Page</code> view.</p>
+
+<p>Default value for every post type is <code class="prettyprint">false</code></p>
+
+<h2 id="show-standard-page-type-in-filter">Show standard page type in filter</h2>
+
+<p><strong>filter</strong> <code class="prettyprint">papi/settings/show_standard_page_type_in_filter_{$post_type}</code></p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="sd">/**
+ * Example of `papi/settings/show_standard_page_type_in_filter_{$post_type}` filter.
+ */</span>
+
+<span class="nx">add_filter</span><span class="p">(</span> <span class="s1">'papi/settings/show_standard_page_type_in_filter_page'</span><span class="p">,</span> <span class="s1">'__return_false'</span> <span class="p">);</span>
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p>This filter allows you to show (<strong>since 2.4.0</strong> standard page is hidden by default) the standard page in the dropdown filter on the list page.</p>
+
+<p>Default value for every post type is <code class="prettyprint">false</code></p>
+
+          <h1 id="custom-property">Custom property</h1>
+
+<p>It&rsquo;s easy to create your own property with Papi. You can use our <a href="http://github.com/wp-papi/generator-property">Yo generator</a></p>
+
+<p>It&rsquo;s important that the class follow the property class name standard in Papi.</p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="c1">// Bad
+</span><span class="k">class</span> <span class="nc">PropertyStringx</span> <span class="k">extends</span> <span class="nx">Papi_Property</span> <span class="p">{}</span>
+
+<span class="k">class</span> <span class="nc">Property_Stringx</span> <span class="k">extends</span> <span class="nx">Papi_Property</span> <span class="p">{}</span>
+
+<span class="k">class</span> <span class="nc">Papi_Property_String_x</span> <span class="k">extends</span> <span class="nx">Papi_Property</span> <span class="p">{}</span>
+
+<span class="c1">// Good
+// type: string
+</span><span class="k">class</span> <span class="nc">Papi_Property_Stringx</span> <span class="k">extends</span> <span class="nx">Papi_Property</span> <span class="p">{}</span>
+
+<span class="c1">// type: image_video
+</span><span class="k">class</span> <span class="nc">Papi_Property_Image_Video</span> <span class="k">extends</span> <span class="nx">Papi_Property</span> <span class="p">{}</span>
+</code></pre>
+
+<p>Example bootstrap and property class:</p>
+
+<p>The html method is the important one, with out that there aren&rsquo;t going to be any property output in WordPress admin.</p>
+
+<p>Read more about the <code class="prettyprint">Papi_Property</code> in the <a href="apigen/class-Papi_Property.html">class documentation</a>.</p>
+<pre><code class="highlight php"><span class="cp">&lt;?php</span>
+
+<span class="c1">// bootstrap.php
+</span><span class="nx">add_action</span><span class="p">(</span> <span class="s1">'papi/include'</span><span class="p">,</span> <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">require_once</span> <span class="s1">'class-papi-property-stringx.php'</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+
+<span class="c1">// class-papi-property-stringx.php
+</span>
+<span class="c1">// Exit if accessed directly
+</span><span class="nb">defined</span><span class="p">(</span> <span class="s1">'ABSPATH'</span> <span class="p">)</span> <span class="o">||</span> <span class="k">exit</span><span class="p">;</span>
+
+<span class="sd">/**
+ * Papi - Custom property string
+ */</span>
+
+<span class="k">class</span> <span class="nc">Papi_Property_Stringx</span> <span class="k">extends</span> <span class="nx">Papi_Property</span> <span class="p">{</span>
+
+  <span class="sd">/**
+   * Get default settings.
+   *
+   * @return array
+   */</span>
+
+  <span class="k">public</span> <span class="k">function</span> <span class="nf">get_default_settings</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">[</span>
+      <span class="s1">'allow_html'</span> <span class="o">=&gt;</span> <span class="kc">false</span>
+    <span class="p">];</span>
+  <span class="p">}</span>
+
+  <span class="sd">/**
+   * Generate the HTML for the property.
+   */</span>
+
+  <span class="k">public</span> <span class="k">function</span> <span class="nf">html</span><span class="p">()</span> <span class="p">{</span>
+    <span class="cp">?&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"</span><span class="cp">&lt;?php</span> <span class="k">echo</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">html_name</span><span class="p">();</span> <span class="cp">?&gt;</span><span class="s">"</span> <span class="na">value=</span><span class="s">"</span><span class="cp">&lt;?php</span> <span class="k">echo</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">get_value</span><span class="p">();</span> <span class="cp">?&gt;</span><span class="s">"</span> <span class="nt">/&gt;</span>
+    <span class="cp">&lt;?php</span>
+  <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre>
+
+      </div>
+      <div class="dark-box">
+          <div class="lang-selector">
+                <a href="#" data-language-name="php">php</a>
+          </div>
+      </div>
+    </div>
+  </body>
+</html>
